@@ -23,29 +23,69 @@ import project.mainframe.api.security.entities.Authenticatable;
 import project.mainframe.api.security.filters.JwtAuthenticationFilter;
 import project.mainframe.api.security.repositories.AuthenticatableRepository;
 import project.mainframe.api.security.services.AuthenticatableDetailsService;
+import project.mainframe.api.security.services.JwtRevocationService;
 import project.mainframe.api.security.utils.JwtUtils;
 
 @Configuration
 public class SecurityConfig implements ApplicationRunner {
 
+    /*
+     * This service is responsible for loading users from the database.
+     */
     private AuthenticatableRepository authenticatableRepository;
+
+    /*
+     * This service is responsible for loading users from the database,
+     * but it differs from the one above in that it implements the
+     * UserDetailsService interface which is required by Spring Security
+     * to create the authentication provider.
+     */
     private AuthenticatableDetailsService authenticatableDetailsService;
 
+    /*
+     * This service is responsible for revoking JWT tokens.
+     */
+    private JwtRevocationService jwtRevocationService;
+
+    /*
+     * This service is responsible for generating and validating JWT tokens.
+     */
     private JwtUtils jwtUtils;
 
+    /*
+     * This is the default username and password that will be created
+     * when the application starts.
+     */
     @Value("${default.user.name}")
     private String defaultUserName;
 
+    /*
+     * This is the default username and password that will be created
+     * when the application starts.
+     */
     @Value("${default.user.password}")
     private String defaultUserPassword;
 
-    public SecurityConfig(AuthenticatableRepository authenticatableRepository, JwtUtils jwtUtils,
-            AuthenticatableDetailsService authenticatableDetailsService) {
-        this.authenticatableRepository = authenticatableRepository;
-        this.jwtUtils = jwtUtils;
+    /*
+     * This is the maximum length of a JWT token.
+     */
+    @Value("${jwt.max-token-length}")
+    private int MAX_TOKEN_LENGTH;
+
+    public SecurityConfig(
+        AuthenticatableRepository authenticatableRepository,                   
+        AuthenticatableDetailsService authenticatableDetailsService,
+        JwtRevocationService jwtRevocationService,
+        JwtUtils jwtUtils) {
+        this.authenticatableRepository = authenticatableRepository;        
         this.authenticatableDetailsService = authenticatableDetailsService;
+        this.jwtRevocationService = jwtRevocationService;
+        this.jwtUtils = jwtUtils;
     }
 
+    /*
+     * Creates the default user.
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if (authenticatableRepository.existsById(defaultUserName)) {
@@ -64,6 +104,9 @@ public class SecurityConfig implements ApplicationRunner {
                 .build());
     }
 
+    /*
+     * Configures the security filter chain.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {   
         http.headers().frameOptions().disable();
@@ -80,18 +123,30 @@ public class SecurityConfig implements ApplicationRunner {
             .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
         .anyRequest().authenticated())
         .addFilterBefore(
-            new JwtAuthenticationFilter(new AntPathRequestMatcher("/api/**"), jwtUtils, authenticationManager()), 
+            new JwtAuthenticationFilter(
+                new AntPathRequestMatcher("/api/**"), 
+                jwtUtils, 
+                authenticationManager(), 
+                jwtRevocationService, 
+                MAX_TOKEN_LENGTH), 
             // Add the JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter
             UsernamePasswordAuthenticationFilter.class); 
 
     return http.build();
     }    
 
+
+    /*
+     * Configures the password encoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /*
+     * Configures the authentication manager.
+     */
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return new ProviderManager(
@@ -99,6 +154,9 @@ public class SecurityConfig implements ApplicationRunner {
         );
     }
 
+    /*
+     * Configures the authentication provider.
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

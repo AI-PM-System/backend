@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,8 +18,20 @@ import project.mainframe.api.security.utils.JwtUtils;
 @Service
 public class AuthenticationService {
     
+    /*
+     * This service is responsible for authenticating users and generating JWT tokens
+     * for them.
+     */
     private JwtUtils jwtUtils;
+
+    /*
+     * This service is responsible for loading users from the database.
+     */
     private AuthenticatableDetailsService authenticatableDetailsService;
+    
+    /*
+     * This service is responsible for encoding passwords.
+     */
     private PasswordEncoder passwordEncoder;
 
     public AuthenticationService(JwtUtils jwtUtils, AuthenticatableDetailsService authenticatableDetailsService, PasswordEncoder passwordEncoder) {
@@ -27,7 +40,19 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
+    /*
+     * This method is called by the AuthenticationController when a user tries to
+     * authenticate. It is responsible for checking the username and password and
+     * generating a JWT token for the user.
+     * 
+     * @param authenticationRequest The request containing the username and password
+     * @return The response containing the JWT token
+     * 
+     * @throws ResponseStatusException If the username or password is invalid
+     * @throws UsernameNotFoundException If the user is not found
+     */
+    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) 
+            throws ResponseStatusException, UsernameNotFoundException {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
 

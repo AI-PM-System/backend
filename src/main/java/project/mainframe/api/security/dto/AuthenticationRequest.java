@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/*
+ * The request to authenticate a user.
+ * 
+ * The request contains the username and password of the user.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

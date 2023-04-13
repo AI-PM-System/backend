@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/*
+ * An authenticatable is a user that can be authenticated
+ */
 @Getter
 @Setter
 @Builder
@@ -21,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 public class Authenticatable implements UserDetails {
-    
+
     @Id
     private String username;
     private String password;
@@ -36,8 +39,8 @@ public class Authenticatable implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities.stream()
-            .map(authority -> (GrantedAuthority) () -> authority)
-            .toList();
+                .map(authority -> (GrantedAuthority) () -> authority)
+                .toList();
     }
 
     @Override

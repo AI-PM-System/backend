@@ -13,12 +13,26 @@ import project.mainframe.api.security.services.AuthenticationService;
 @RequestMapping("/auth")
 public class AuthenticationController {
     
+    /*
+     * The service that handles authentication.
+     */
     private AuthenticationService authenticationService;
 
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
+    /*
+     * Authenticate a user.
+     * 
+     * The request contains the username and password of the user.
+     * The response contains a JWT token that can be used to authenticate
+     * the user in subsequent requests.
+     * 
+     * @param authenticationRequest The request containing the username and password
+     * 
+     * @return The response containing the JWT token
+     */
     @PostMapping
     public AuthenticationResponse authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
         return authenticationService.authenticate(authenticationRequest);

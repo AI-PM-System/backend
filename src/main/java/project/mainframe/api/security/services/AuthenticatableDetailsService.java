@@ -10,12 +10,24 @@ import project.mainframe.api.security.repositories.AuthenticatableRepository;
 @Service
 public class AuthenticatableDetailsService implements UserDetailsService {
     
+    /*
+     * The repository used to load the user from the database
+     */
     private AuthenticatableRepository authenticatableRepository;
 
     public AuthenticatableDetailsService(AuthenticatableRepository authenticatableRepository) {
         this.authenticatableRepository = authenticatableRepository;
     }
 
+    /*
+     * This method is called by Spring Security when a user tries to authenticate.
+     * It is used to load the user from the database.
+     * 
+     * @param username The username of the user
+     * @return The user
+     * 
+     * @throws UsernameNotFoundException If the user is not found
+     */
     @Override
     public Authenticatable loadUserByUsername(String username) throws UsernameNotFoundException {
         return authenticatableRepository

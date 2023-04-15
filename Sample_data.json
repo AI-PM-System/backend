@@ -1,0 +1,25 @@
+
+{
+    "roles": [
+        {
+            "name": "Scrum Master",
+            "description": "The Scrum Master is responsible for facilitating the Scrum process, ensuring that the team adheres to Scrum practices, and removing any obstacles that may hinder the team's progress. They also facilitate the Scrum events and coach the team on Scrum principles and practices."
+        },
+        {
+            "name": "Product Owner",
+            "description": "The Product Owner is responsible for defining and prioritizing the product backlog, representing the needs of the stakeholders, and ensuring that the team is working on the most valuable and highest priority items. They collaborate with stakeholders to understand requirements, provide clarifications to the team, and ensure that the product backlog is well-groomed and ready for sprint planning."
+        },
+        {
+            "name": "Development Team",
+            "description": "The Development Team is responsible for delivering a potentially releasable increment of the product at the end of each sprint. They self-organize, plan and execute their work, and collaborate to deliver high-quality software. The Development Team is cross-functional, with all the skills necessary to deliver the product increment, and is responsible for continuously improving their skills, practices, and the product they are building."
+        },
+        {
+            "name": "Stakeholder",
+            "description": "A Stakeholder is anyone with an interest or involvement in the product being developed. This includes customers, users, sponsors, management, and other individuals or groups who provide feedback, input, or requirements to the Scrum Team. They provide feedback on the product increment and collaborate with the Product Owner in prioritizing the product backlog."
+        },
+        {
+            "name": "Scrum Team",
+            "description": "The Scrum Team is a self-organizing, cross-functional team responsible for delivering a potentially releasable increment of the product at the end of each sprint. It consists of the Scrum Master, Product Owner, and Development Team, who work together collaboratively to deliver high-quality software."
+        }
+    ]
+}

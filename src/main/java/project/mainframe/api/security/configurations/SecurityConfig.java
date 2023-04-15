@@ -115,6 +115,9 @@ public class SecurityConfig implements ApplicationRunner {
         http.authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/h2*/**").permitAll()
             .requestMatchers("/error").permitAll()
+            .requestMatchers("/projects").permitAll()
+            .requestMatchers("/projects/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/projects/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")

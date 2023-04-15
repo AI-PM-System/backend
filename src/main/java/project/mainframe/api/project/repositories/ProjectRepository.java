@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import project.mainframe.api.project.entities.Project;
 
+/**
+ * Project repository.
+ */
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 }

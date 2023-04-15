@@ -12,36 +12,44 @@ import project.mainframe.api.project.dto.role.RoleResponse;
 import project.mainframe.api.project.dto.user.UserResponse;
 import project.mainframe.api.project.entities.Member;
 
+/**
+ * Member response.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class MemberResponse {
-    /*
+
+    /**
      * The member's id
      */
     private Long id;
 
-    /*
+    /**
      * A member's roles
      */
     private List<RoleResponse> roles;
 
-    /*
+    /**
      * The member's project
      */
     private ProjectResponse project;
 
-    /*
+    /**
      * The member's user
      */
     private UserResponse user;
 
-    /*
+    /**
      * Whether the member is an AI
      */
     private boolean isAI;
 
+    /**
+     * Constructor.
+     * @param member
+     */
     public MemberResponse(Member member) {
         this.id = member.getId();
         this.roles = member.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());

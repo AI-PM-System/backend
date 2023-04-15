@@ -8,17 +8,22 @@ import project.mainframe.api.project.dto.user.UserRequest;
 import project.mainframe.api.project.dto.user.UserResponse;
 import project.mainframe.api.project.entities.User;
 
+/**
+ * User service.
+ */
 @Service
 public class UserService extends BaseCrudService<UserRequest, UserResponse, User, String> {
     
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository The repository to use for CRUD operations.
      */
     public UserService(JpaRepository<User, String> jpaRepository) {
         super(jpaRepository);
     }
 
-    /*
+    /**
      * Maps an entity to a response.
      * 
      * @param entity
@@ -29,7 +34,7 @@ public class UserService extends BaseCrudService<UserRequest, UserResponse, User
         return new UserResponse(entity);
     }
 
-    /*
+    /**
      * Maps a request to an entity.
      * 
      * @param request

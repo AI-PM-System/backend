@@ -5,18 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Artifact request.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class ArtifactRequest {
     
-    /*
+    /**
      * The id of the artifact
      */
     private Long id;
 
-    /*
+    /**
      * The artifact's project id
      */
     private Long projectId;

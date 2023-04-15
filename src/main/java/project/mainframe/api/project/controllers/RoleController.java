@@ -8,9 +8,16 @@ import project.mainframe.api.project.dto.role.RoleRequest;
 import project.mainframe.api.project.dto.role.RoleResponse;
 import project.mainframe.api.project.entities.Role;
 
+/**
+ * Role controller.
+ */
 @RequestMapping("/api/roles")
 public class RoleController extends BaseCrudController<RoleRequest, RoleResponse, Role, Long> {
 
+    /**
+     * Constructor.
+     * @param baseCrudService
+     */
     public RoleController(BaseCrudService<RoleRequest, RoleResponse, Role, Long> baseCrudService) {
         super(baseCrudService);
     }

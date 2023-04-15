@@ -15,32 +15,43 @@ import project.mainframe.api.security.dto.AuthenticationResponse;
 import project.mainframe.api.security.entities.Authenticatable;
 import project.mainframe.api.security.utils.JwtUtils;
 
+/**
+ * This service is responsible for authenticating users and generating JWT tokens
+ * for them.
+ */
 @Service
 public class AuthenticationService {
     
-    /*
+    /**
      * This service is responsible for authenticating users and generating JWT tokens
      * for them.
      */
     private JwtUtils jwtUtils;
 
-    /*
+    /**
      * This service is responsible for loading users from the database.
      */
     private AuthenticatableDetailsService authenticatableDetailsService;
     
-    /*
+    /**
      * This service is responsible for encoding passwords.
      */
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * This constructor is called by Spring when the application starts.
+     * 
+     * @param jwtUtils
+     * @param authenticatableDetailsService
+     * @param passwordEncoder
+     */
     public AuthenticationService(JwtUtils jwtUtils, AuthenticatableDetailsService authenticatableDetailsService, PasswordEncoder passwordEncoder) {
         this.jwtUtils = jwtUtils;
         this.authenticatableDetailsService = authenticatableDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    /*
+    /**
      * This method is called by the AuthenticationController when a user tries to
      * authenticate. It is responsible for checking the username and password and
      * generating a JWT token for the user.

@@ -5,18 +5,34 @@ import java.util.Base64;
 
 import project.mainframe.api.security.exceptions.JwtSanitizerException;
 
+/**
+ * A sanitizer for JWT tokens.
+ * 
+ * Details:
+ * The sanitizer is used to sanitize JWT tokens. The sanitizer is used to prevent
+ * JWT
+ * tokens from being too long. The sanitizer is used to prevent JWT tokens from
+ * containing
+ * malicious code.
+ */
 public class JwtSanitizer {
 
-    /*
+    /**
      * Maximum length of a JWT token allowed by the sanitizer.
      */
     private int MAX_TOKEN_LENGTH;
 
+    /**
+     * Constructor.
+     * 
+     * @param maxTokenLength the maximum length of a JWT token allowed by the
+     *                       sanitizer
+     */
     public JwtSanitizer(int maxTokenLength) {
         this.MAX_TOKEN_LENGTH = maxTokenLength;
     }
 
-    /*
+    /**
      * Sanitizes the given JWT token.
      * 
      * Details:
@@ -60,7 +76,7 @@ public class JwtSanitizer {
         return constructTroken(header, payload, signature);
     }
 
-    /*
+    /**
      * Sanitizes the given JWT header.
      * 
      * Details:
@@ -78,7 +94,7 @@ public class JwtSanitizer {
         return header;
     }
 
-    /*
+    /**
      * Constructs a JWT token from the given header, payload and signature.
      * 
      * @param header the header of the token
@@ -93,7 +109,7 @@ public class JwtSanitizer {
         return header + "." + payload + "." + signature;
     }
 
-    /*
+    /**
      * Sanitizes the given string.
      * 
      * Details:

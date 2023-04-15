@@ -27,33 +27,65 @@ import project.mainframe.api.security.utils.JwtUtils;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * This filter is responsible for authenticating users using JWT tokens.
+ */
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    /*
-     * The messages that are used to describe the authentication result.
+    /**
+     * Error message for whether or not the token is expired
      */
     private static final String TOKEN_EXPIRED_MSG = "JWT token is expired";
+
+    /**
+     * Error message for whether or not the token is revoked
+     */
     private static final String TOKEN_REVOKED_MSG = "JWT token is revoked";
+
+    /**
+     * Error message for whether or not the token is invalid
+     */
     private static final String TOKEN_INVALID_MSG = "JWT token is invalid";
+
+    /**
+     * Error message for whether or not the token is missing a claim
+     */
     private static final String TOKEN_MISSING_CLAIM_MSG = "JWT token is missing a claim";
+    
+    /**
+     * Error message for whether or not the token has an invalid claim
+     */
     private static final String TOKEN_INVALID_CLAIM_MSG = "JWT token has an invalid claim";
+    
+    /**
+     * Error message for whether or not the token has an invalid signature
+     */
     private static final String TOKEN_INVALID_SIGNATURE_MSG = "JWT token signature is invalid";
 
-    /*
+    /**
      * The utility that is used to validate and parse JWT tokens.
      */
     private JwtUtils jwtUtils;
 
-    /*
+    /**
      * The sanitizer that is used to sanitize the JWT token.
      */
     private JwtSanitizer jwtSanitizer;
 
-    /*
+    /**
      * The service that handles revocation of JWT tokens.
      */
     private JwtRevocationService jwtRevocationService;
 
+    /**
+     * Constructor.
+     * 
+     * @param requestMatcher the request matcher
+     * @param jwtUtils the JWT utility
+     * @param authenticationManager the authentication manager
+     * @param jwtRevocationService the JWT revocation service
+     * @param maxTokenLength the maximum length of the token
+     */
     public JwtAuthenticationFilter(
             RequestMatcher requestMatcher,
             JwtUtils jwtUtils,
@@ -67,7 +99,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         setAuthenticationManager(authenticationManager);
     }
 
-    /*
+    /**
      * Extracts the JWT token from the request and tries to authenticate the user.
      * 
      * Details:
@@ -129,7 +161,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         }
     }
 
-    /*
+    /**
      * Sets the authentication object in the SecurityContext.
      * 
      * Details:
@@ -158,7 +190,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         chain.doFilter(request, response);
     }
 
-    /*
+    /**
      * Creates a PreAuthenticatedAuthenticationToken object from the JWT token.
      * 
      * Details:
@@ -178,7 +210,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         return new PreAuthenticatedAuthenticationToken(username, "", authorities);
     }
 
-    /*
+    /**
      * Extracts the JWT token from the request header.
      * 
      * Details:

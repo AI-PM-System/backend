@@ -8,47 +8,54 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.entities.Event;
 
+/**
+ * Event request.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class EventRequest {
 
-    /*
+    /**
      * The event id
      */
     private Long id;
     
-    /*
+    /**
      * The project id
      */
     private Long projectId;
 
-    /*
+    /**
      * The event name
      */
     private String name;
 
-    /*
+    /**
      * The start date time
      */
     private LocalDateTime startDateTime;
 
-    /*
+    /**
      * The end date time
      */
     private LocalDateTime endDateTime;
 
-    /*
+    /**
      * The location
      */
     private String location;
 
-    /*
+    /**
      * The agenda
      */
     private String agenda;
 
+    /**
+     * Constructor.
+     * @param event
+     */
     public EventRequest(Event event) {
         id = event.getId();
         projectId = event.getProject().getId();

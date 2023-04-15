@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/*
+/**
  * A revocation is a token that is no longer valid
  */
 @NoArgsConstructor
@@ -19,7 +19,14 @@ import lombok.Setter;
 @Entity
 public class Revocation {
     
+    /**
+     * The token that is no longer valid
+     */
     @Id
     private String token;
+
+    /**
+     * When was the token revoked?
+     */
     private LocalDateTime until;
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import project.mainframe.api.security.entities.Authenticatable;
 
-/*
+/**
  * A user is a person who is part of the system.
  * 
  * A user can be part of many projects through the member entity.
@@ -28,25 +28,25 @@ public class User extends Authenticatable {
      * The username function as the primary key.
      */
 
-    /*
+    /**
      * The user's first name
      */
     @Column(nullable = false)
     private String firstName;
 
-    /*
+    /**
      * The user's last name
      */
     @Column(nullable = false)
     private String lastName;
 
-    /*
+    /**
      * The user's email address
      */
     @Column(nullable = false)
     private String email;
 
-    /*
+    /**
      * The user's phone number
      */
     @Column(nullable = false)

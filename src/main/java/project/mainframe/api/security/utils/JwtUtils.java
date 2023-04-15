@@ -19,34 +19,37 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class for JWT token generation and parsing.
+ */
 @Component
 public class JwtUtils {
 
-    /*
+    /**
      * The secret key that is used to sign the JWT token.
      */
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    /*
+    /**
      * The expiration time of the JWT token.
      */
     @Value("${jwt.expiration}")
     private long EXPIRATION_TIME;
 
-    /*
+    /**
      * The issuer of the JWT token.
      */
     @Value("${jwt.issuer}")
     private String ISSUER;
 
-    /*
+    /**
      * The audience of the JWT token.
      */
     @Value("${jwt.audience}")
     private String AUDIENCE;
     
-    /*
+    /**
      * Generates a JWT token for a given username and list of authorities
      * 
      * @param username the username of the user
@@ -64,7 +67,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    /*
+    /**
      * Parses, validates and returns the claims of a JWT token
      * 
      * @param token the JWT token to parse
@@ -88,7 +91,7 @@ public class JwtUtils {
             .getBody();
     }
 
-    /*
+    /**
      * Returns the expiration date of a JWT token
      * 
      * @param token the JWT token to parse
@@ -102,7 +105,7 @@ public class JwtUtils {
             .toLocalDateTime();
     }
 
-    /*
+    /**
      * Returns the authorities of a JWT token
      * 
      * @param token the JWT token to parse

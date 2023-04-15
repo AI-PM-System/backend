@@ -11,37 +11,44 @@ import project.mainframe.api.project.dto.member.MemberResponse;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Role;
 
+/**
+ * Role response.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class RoleResponse {
 
-    /*
+    /**
      * The id of the role
      */
     private Long id;
 
-    /*
+    /**
      * The name of the role
      */    
     private String name;
     
-    /*
+    /**
      * The description of the role
      */
     private String description;
     
-    /*
+    /**
      * The role's members
      */
     private List<MemberResponse> members;
 
-    /*
+    /**
      * The role's project
      */
     private ProjectResponse project;
 
+    /**
+     * Constructor.
+     * @param role
+     */
     public RoleResponse(Role role) {
         this.id = role.getId();
         this.name = role.getName();

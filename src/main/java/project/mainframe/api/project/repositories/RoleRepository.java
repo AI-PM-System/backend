@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import project.mainframe.api.project.entities.Role;
 
+/**
+ * Role repository.
+ */
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 }

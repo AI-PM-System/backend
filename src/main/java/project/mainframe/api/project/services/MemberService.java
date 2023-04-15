@@ -11,26 +11,31 @@ import project.mainframe.api.project.repositories.ProjectRepository;
 import project.mainframe.api.project.repositories.RoleRepository;
 import project.mainframe.api.project.repositories.UserRepository;
 
+/**
+ * Member service.
+ */
 @Service
 public class MemberService extends BaseCrudService<MemberRequest, MemberResponse, Member, Long>  {
     
-    /*
+    /**
      * The project repository to use for CRUD operations.
      */
     private ProjectRepository projectRepository;
 
-    /*
+    /**
      * The user repository to use for CRUD operations.
      */
     private UserRepository userRepository;
 
-    /*
+    /**
      * The role repository to use for CRUD operations.
      */
     private RoleRepository roleRepository;
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository The repository to use for CRUD operations.
      */
     public MemberService(
         JpaRepository<Member, Long> jpaRepository,
@@ -44,7 +49,7 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
         this.roleRepository = roleRepository;
     }
 
-    /*
+    /**
      * Maps an entity to a response.
      * 
      * @param entity
@@ -55,7 +60,7 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
         return new MemberResponse(entity);
     }
 
-    /*
+    /**
      * Maps a request to an entity.
      * 
      * @param request

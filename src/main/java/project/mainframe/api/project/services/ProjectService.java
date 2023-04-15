@@ -12,31 +12,36 @@ import project.mainframe.api.project.repositories.EventRepository;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.RoleRepository;
 
+/**
+ * Project service.
+ */
 @Service
 public class ProjectService extends BaseCrudService<ProjectRequest, ProjectResponse, Project, Long> {
     
-    /*
+    /**
      * The event repository.
      */
     private EventRepository eventRepository;
 
-    /*
+    /**
      * The artifact repository.
      */
     private ArtifactRepository artifactRepository;
 
-    /*
+    /**
      * The role repository.
      */
     private RoleRepository roleRepository;
 
-    /*
+    /**
      * The member repository.
      */
     private MemberRepository memberRepository;
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository The repository to use for CRUD operations.
      */
     public ProjectService(
         JpaRepository<Project, Long> jpaRepository,
@@ -52,7 +57,7 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
         this.memberRepository = memberRepository;
     }
 
-    /*
+    /**
      * Maps an entity to a response.
      * 
      * @param entity
@@ -63,7 +68,7 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
         return new ProjectResponse(entity);
     }
 
-    /*
+    /**
      * Maps a request to an entity.
      * 
      * @param request

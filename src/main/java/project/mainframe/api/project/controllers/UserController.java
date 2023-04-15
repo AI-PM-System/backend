@@ -8,9 +8,16 @@ import project.mainframe.api.project.dto.user.UserRequest;
 import project.mainframe.api.project.dto.user.UserResponse;
 import project.mainframe.api.project.entities.User;
 
+/**
+ * User controller.
+ */
 @RequestMapping("/api/users")
 public class UserController extends BaseCrudController<UserRequest, UserResponse, User, String> {
 
+    /**
+     * Constructor.
+     * @param baseCrudService
+     */
     public UserController(BaseCrudService<UserRequest, UserResponse, User, String> baseCrudService) {
         super(baseCrudService);
     }

@@ -9,16 +9,21 @@ import project.mainframe.api.project.dto.event.EventResponse;
 import project.mainframe.api.project.entities.Event;
 import project.mainframe.api.project.repositories.ProjectRepository;
 
+/**
+ * Event service.
+ */
 @Service
 public class EventService extends BaseCrudService<EventRequest, EventResponse, Event, Long> {
 
-    /*
+    /**
      * The project repository to use for CRUD operations.
      */
     private ProjectRepository projectRepository;    
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository The repository to use for CRUD operations.
      */
     public EventService(
         JpaRepository<Event, Long> jpaRepository,
@@ -28,7 +33,7 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
         this.projectRepository = projectRepository;
     }
 
-    /*
+    /**
      * Maps an entity to a response.
      * 
      * @param entity
@@ -39,7 +44,7 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
         return new EventResponse(entity);
     }
 
-    /*
+    /**
      * Maps a request to an entity.
      * 
      * @param request

@@ -8,9 +8,16 @@ import project.mainframe.api.project.dto.project.ProjectRequest;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Project;
 
+/**
+ * Project controller.
+ */
 @RequestMapping("/api/projects")
 public class ProjectController extends BaseCrudController<ProjectRequest, ProjectResponse, Project, Long> {
 
+    /**
+     * Constructor.
+     * @param baseCrudService
+     */
     public ProjectController(BaseCrudService<ProjectRequest, ProjectResponse, Project, Long> baseCrudService) {
         super(baseCrudService);
     }

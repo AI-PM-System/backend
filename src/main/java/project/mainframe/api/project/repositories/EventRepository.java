@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import project.mainframe.api.project.entities.Event;
 
+/**
+ * Event repository.
+ */
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 }

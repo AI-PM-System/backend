@@ -7,23 +7,31 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Base CRUD service.
+ * 
+ * @param <Request> Request
+ * @param <Response> Response
+ * @param <E> E
+ * @param <ID> ID
+ */
 public abstract class BaseCrudService<Request, Response, E, ID> {
 
-    /*
+    /**
      * The repository to use for CRUD operations.
-     * 
-     * @param repository
      */
     protected JpaRepository<E, ID> jpaRepository;
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository<Request, Response, E, ID> jpaRepository
      */
     public BaseCrudService(JpaRepository<E, ID> jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
-    /*
+    /**
      * Finds all entities.
      * 
      * @param request
@@ -39,7 +47,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
             .collect(Collectors.toList()); 
     }
 
-    /*
+    /**
      * Finds an entity by id.
      * 
      * @param id
@@ -56,7 +64,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
         return mapToResponse(entity);
     }
 
-    /*
+    /**
      * Creates an entity.
      * 
      * @param request
@@ -79,7 +87,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
         return mapToResponse(createdEntity);
     }
 
-    /*
+    /**
      * Updates an entity.
      * 
      * @param id
@@ -103,7 +111,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
         return mapToResponse(updatedEntity);
     }
 
-    /*
+    /**
      * Deletes an entity.
      * 
      * @param id
@@ -122,7 +130,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
         return true;
     }
 
-    /*
+    /**
      * Gets the an associated entity by id.
      * 
      * @param Object primaryKey
@@ -134,20 +142,28 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
             .orElse(null);
     }
 
-    /*
+    /**
      * Gets associated entities by id.
+     * 
+     * @param JpaRepository repository
+     * @param List primaryKeys
+     * @return List
      */
     protected <T, PK> List<T> getAssociatedEntities(JpaRepository<T, PK> repository, List<PK> primaryKeys) {
         return repository.findAllById(primaryKeys);
     }
 
-    /*
+    /**
      * Maps an entity to a response.
+     * 
+     * @param E entity
      */
     protected abstract Response mapToResponse(E entity);
 
-    /*
+    /**
      * Maps a request to an entity.
+     * 
+     * @param Request request
      */
     protected abstract E mapToEntity(Request request);
 }

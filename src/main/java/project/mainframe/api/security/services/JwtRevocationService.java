@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 import project.mainframe.api.security.entities.Revocation;
 import project.mainframe.api.security.repositories.RevocationRepository;
 
+/**
+ * This class is used to revoke tokens.
+ */
 @Service
 public class JwtRevocationService {
     
-    /*
+    /**
      * The repository for revocations.
      */
     private RevocationRepository revocationRepository;    
@@ -19,7 +22,7 @@ public class JwtRevocationService {
         this.revocationRepository = revocationRepository;        
     }
 
-    /*
+    /**
      * Revoke a token.
      * 
      * @param token The token to revoke
@@ -29,14 +32,14 @@ public class JwtRevocationService {
         revocationRepository.save(new Revocation(token, until));
     }    
 
-    /*
+    /**
      * Clear all expired revocations.
      */
     public void clearExpired() {
         revocationRepository.deleteByUntilBefore(LocalDateTime.now());
     }
 
-    /*
+    /**
      * Check if a token is revoked.
      * 
      * @param token The token to check

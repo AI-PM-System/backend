@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 
-/*
+/**
  * An artifact is a any type of element that is part of a project.
  * 
  * Examples of artifacts are:
@@ -33,14 +33,14 @@ import lombok.Getter;
 @Entity
 public class Artifact {
     
-    /*
+    /**
      * The id of the artifact
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*
+    /**
      * An artifact belongs to one project
      */
     @ManyToOne

@@ -8,24 +8,36 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import project.mainframe.api.base.services.BaseCrudService;
 
+/**
+ * Base CRUD controller.
+ * 
+ * @param <Request> Request
+ * @param <Response> Response
+ * @param <E> E
+ * @param <ID> ID
+ */
+@RestController
 public class BaseCrudController<Request, Response, E, ID> {
     
-    /*
+    /**
      * The generic service.
      */
     protected BaseCrudService<Request, Response, E, ID> baseCrudService;
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param baseCrudService
      */
     public BaseCrudController(BaseCrudService<Request, Response, E, ID> baseCrudService) {
         this.baseCrudService = baseCrudService;
     }
 
-    /*
+    /**
      * Finds all entities.
      * 
      * @return List<Response>
@@ -35,7 +47,7 @@ public class BaseCrudController<Request, Response, E, ID> {
         return baseCrudService.findAll();
     }
 
-    /*
+    /**
      * Finds an entity by id.
      * 
      * @param id
@@ -46,7 +58,7 @@ public class BaseCrudController<Request, Response, E, ID> {
         return baseCrudService.findById(id);
     }
 
-    /*
+    /**
      * Creates an entity.
      * 
      * @param request
@@ -57,7 +69,7 @@ public class BaseCrudController<Request, Response, E, ID> {
         return baseCrudService.create(request);
     }
 
-    /*
+    /**
      * Updates an entity.
      * 
      * @param request
@@ -68,7 +80,7 @@ public class BaseCrudController<Request, Response, E, ID> {
         return baseCrudService.update(id, request);
     }
 
-    /*
+    /**
      * Deletes an entity.
      * 
      * @param id

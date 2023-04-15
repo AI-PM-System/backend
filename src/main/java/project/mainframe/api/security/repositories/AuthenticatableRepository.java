@@ -4,5 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import project.mainframe.api.security.entities.Authenticatable;
 
+/**
+ * Authenticatable repository.
+ */
 public interface AuthenticatableRepository extends JpaRepository<Authenticatable, String> {
 }

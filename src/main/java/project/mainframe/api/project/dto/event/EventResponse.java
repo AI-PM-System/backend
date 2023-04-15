@@ -9,47 +9,54 @@ import lombok.Setter;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Event;
 
+/**
+ * Event response.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class EventResponse {
 
-    /*
+    /**
      * The event id
      */
     private Long id;
 
-    /*
+    /**
      * The project
      */
     private ProjectResponse project;
 
-    /*
+    /**
      * The event name
      */
     private String name;
 
-    /*
+    /**
      * The start date time
      */
     private LocalDateTime startDateTime;
 
-    /*
+    /**
      * The end date time
      */
     private LocalDateTime endDateTime;
 
-    /*
+    /**
      * The location
      */
     private String location;
 
-    /*
+    /**
      * The agenda
      */
     private String agenda;
 
+    /**
+     * Constructor.
+     * @param event
+     */
     public EventResponse(Event event) {
         this.id = event.getId();
         this.project = new ProjectResponse(event.getProject());

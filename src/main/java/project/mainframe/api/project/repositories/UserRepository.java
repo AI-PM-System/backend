@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import project.mainframe.api.project.entities.User;
 
+/**
+ * User repository.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 }

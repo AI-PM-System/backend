@@ -9,20 +9,30 @@ import project.mainframe.api.security.dto.AuthenticationRequest;
 import project.mainframe.api.security.dto.AuthenticationResponse;
 import project.mainframe.api.security.services.AuthenticationService;
 
+/**
+ * Authentication controller.
+ * 
+ * This controller handles authentication requests.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
     
-    /*
+    /**
      * The service that handles authentication.
      */
     private AuthenticationService authenticationService;
 
+    /**
+     * Constructor.
+     * 
+     * @param authenticationService The service that handles authentication
+     */
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
-    /*
+    /**
      * Authenticate a user.
      * 
      * The request contains the username and password of the user.

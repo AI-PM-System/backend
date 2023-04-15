@@ -9,16 +9,21 @@ import project.mainframe.api.project.dto.role.RoleResponse;
 import project.mainframe.api.project.entities.Role;
 import project.mainframe.api.project.repositories.ProjectRepository;
 
+/**
+ * Role service.
+ */
 @Service
 public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role, Long> {
     
-    /*
+    /**
      * The project repository to use for CRUD operations.
      */
     private ProjectRepository projectRepository;    
 
-    /*
+    /**
      * Constructor.
+     * 
+     * @param jpaRepository The repository to use for CRUD operations.
      */
     public RoleService(
         JpaRepository<Role, Long> jpaRepository,
@@ -28,7 +33,7 @@ public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role
         this.projectRepository = projectRepository;
     }
 
-    /*
+    /**
      * Maps an entity to a response.
      * 
      * @param entity
@@ -39,7 +44,7 @@ public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role
         return new RoleResponse(entity);
     }
 
-    /*
+    /**
      * Maps a request to an entity.
      * 
      * @param request

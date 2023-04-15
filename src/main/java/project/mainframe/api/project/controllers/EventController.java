@@ -8,9 +8,16 @@ import project.mainframe.api.project.dto.event.EventRequest;
 import project.mainframe.api.project.dto.event.EventResponse;
 import project.mainframe.api.project.entities.Event;
 
+/**
+ * Event controller.
+ */
 @RequestMapping("/api/events")
 public class EventController extends BaseCrudController<EventRequest, EventResponse, Event, Long> {
 
+    /**
+     * Constructor.
+     * @param baseCrudService
+     */
     public EventController(BaseCrudService<EventRequest, EventResponse, Event, Long> baseCrudService) {
         super(baseCrudService);
     }

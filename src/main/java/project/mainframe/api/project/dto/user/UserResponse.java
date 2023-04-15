@@ -2,14 +2,12 @@ package project.mainframe.api.project.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.entities.User;
 
 /**
  * User response.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -51,4 +49,9 @@ public class UserResponse {
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
     }
+
+    /**
+     * No-args constructor
+     */
+    public UserResponse() {}
 }

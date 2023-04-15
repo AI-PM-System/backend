@@ -2,7 +2,6 @@ package project.mainframe.api.project.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.security.dto.AuthenticationRequest;
 
@@ -13,7 +12,6 @@ import project.mainframe.api.security.dto.AuthenticationRequest;
  * The request also expects a username and password,
  * which are inherited from AuthenticationRequest
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -38,4 +36,9 @@ public class UserRequest extends AuthenticationRequest {
      * The user's phone number
      */
     private String phoneNumber;
+
+    /**
+     * No-args constructor
+     */
+    public UserRequest() {}
 }

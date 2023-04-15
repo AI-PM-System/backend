@@ -11,14 +11,12 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * An event defines a meeting or other event 
  * that is related to a project.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -68,4 +66,9 @@ public class Event {
      */
     @Column(nullable = false)
     private String agenda;
+
+    /**
+     * No-args constructor
+     */
+    public Event() {}
 }

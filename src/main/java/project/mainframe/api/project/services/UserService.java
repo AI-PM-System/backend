@@ -26,8 +26,8 @@ public class UserService extends BaseCrudService<UserRequest, UserResponse, User
     /**
      * Maps an entity to a response.
      * 
-     * @param entity
-     * @return EventResponse
+     * @param entity The entity to map.
+     * @return EventResponse response
      */
     @Override
     protected UserResponse mapToResponse(User entity) {
@@ -37,8 +37,8 @@ public class UserService extends BaseCrudService<UserRequest, UserResponse, User
     /**
      * Maps a request to an entity.
      * 
-     * @param request
-     * @return Event
+     * @param request The request to map.
+     * @return Event entity
      */
     @Override
     protected User mapToEntity(UserRequest request) {

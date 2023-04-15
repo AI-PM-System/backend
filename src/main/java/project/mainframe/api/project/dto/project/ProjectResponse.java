@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.dto.artifact.ArtifactResponse;
 import project.mainframe.api.project.dto.event.EventResponse;
@@ -16,7 +15,6 @@ import project.mainframe.api.project.entities.Project;
 /**
  * Project response.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -59,7 +57,7 @@ public class ProjectResponse {
 
     /**
      * Constructor.
-     * @param project
+     * @param project The project to map.
      */
     public ProjectResponse(Project project) {
         this.id = project.getId();
@@ -69,4 +67,9 @@ public class ProjectResponse {
         this.roles = project.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());
         this.artifacts = project.getArtifacts().stream().map(ArtifactResponse::new).collect(Collectors.toList());
     }
+
+    /**
+     * No-args constructor
+     */
+    public ProjectResponse() {}
 }

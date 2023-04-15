@@ -4,13 +4,11 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Member request.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -35,4 +33,9 @@ public class MemberRequest {
      * The member's user defined by username
      */
     private String username;
+
+    /**
+     * No-args constructor
+     */
+    public MemberRequest() {}
 }

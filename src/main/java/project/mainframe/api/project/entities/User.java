@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import project.mainframe.api.security.entities.Authenticatable;
@@ -14,7 +13,6 @@ import project.mainframe.api.security.entities.Authenticatable;
  * 
  * A user can be part of many projects through the member entity.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -51,4 +49,9 @@ public class User extends Authenticatable {
      */
     @Column(nullable = false)
     private String phoneNumber;
+
+    /**
+     * No-args constructor
+     */
+    public User() {}
 }

@@ -19,8 +19,8 @@ public class JwtAuthenticationException extends AuthenticationException {
     /**
      * Constructor.
      * 
-     * @param msg
-     * @param cause
+     * @param msg The message
+     * @param cause The cause
      */
     public JwtAuthenticationException(String msg, Throwable cause) {
         super(msg, cause);

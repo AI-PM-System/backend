@@ -36,6 +36,9 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
+     * @param projectRepository The project repository.
+     * @param userRepository The user repository.
+     * @param roleRepository The role repository.
      */
     public MemberService(
         JpaRepository<Member, Long> jpaRepository,
@@ -52,8 +55,8 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
     /**
      * Maps an entity to a response.
      * 
-     * @param entity
-     * @return EventResponse
+     * @param entity The entity to map.
+     * @return EventResponse The response.
      */
     @Override
     protected MemberResponse mapToResponse(Member entity) {
@@ -63,8 +66,8 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
     /**
      * Maps a request to an entity.
      * 
-     * @param request
-     * @return Event
+     * @param request The request to map.
+     * @return Event The entity.
      */
     @Override
     protected Member mapToEntity(MemberRequest request) {

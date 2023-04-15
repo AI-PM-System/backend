@@ -4,8 +4,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 
-import project.mainframe.api.project.entities.Project;
-import project.mainframe.api.project.repositories.ProjectRepository;
 
 /**
  * Sample data.
@@ -14,30 +12,16 @@ import project.mainframe.api.project.repositories.ProjectRepository;
 public class SampleData implements ApplicationRunner {
 
     /**
-     * The project repository.
-     */
-    private ProjectRepository projectRepository;
-
-    /**
      * Constructor.
-     * @param projectRepository
      */
-    public SampleData(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
+    public SampleData() {
     }
     
     /**
      * Runs the application.
-     * @param args
+     * @param args Application arguments.
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        if (projectRepository.findByName("name") != null) {
-            projectRepository.save(Project.builder().name("name").description("description").build());
-        }
-
-        if (projectRepository.findByName("name2") != null) {
-            projectRepository.save(Project.builder().name("name2").description("description2").build());
-        }
     }
 }

@@ -6,13 +6,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * A revocation is a token that is no longer valid
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -29,4 +27,9 @@ public class Revocation {
      * When was the token revoked?
      */
     private LocalDateTime until;
+
+    /**
+     * No-args constructor
+     */
+    public Revocation() {}
 }

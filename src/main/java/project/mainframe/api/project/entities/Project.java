@@ -11,7 +11,6 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -19,7 +18,6 @@ import lombok.Setter;
  * A project functions as a container for all the data 
  * related to a specific project.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -69,4 +67,9 @@ public class Project {
      */
     @OneToMany(mappedBy = "project")
     private List<Artifact> artifacts;
+
+    /**
+     * No-args constructor
+     */
+    public Project() {}
 }

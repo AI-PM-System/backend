@@ -12,7 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
  * 
  * @param <Request> Request
  * @param <Response> Response
- * @param <E> E
+ * @param <E> Entity
  * @param <ID> ID
  */
 public abstract class BaseCrudService<Request, Response, E, ID> {
@@ -25,7 +25,7 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Constructor.
      * 
-     * @param jpaRepository<Request, Response, E, ID> jpaRepository
+     * @param jpaRepository jpaRepository
      */
     public BaseCrudService(JpaRepository<E, ID> jpaRepository) {
         this.jpaRepository = jpaRepository;
@@ -34,9 +34,8 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Finds all entities.
      * 
-     * @param request
-     * @return List<Response>
-     * @throws ResponseStatusException
+     * @return List
+     * @throws ResponseStatusException ResponseStatusException
      */
     public List<Response> findAll() throws ResponseStatusException {
         List<E> entities = jpaRepository.findAll();
@@ -50,9 +49,9 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Finds an entity by id.
      * 
-     * @param id
-     * @return Response
-     * @throws ResponseStatusException
+     * @param id id
+     * @return Response response
+     * @throws ResponseStatusException ResponseStatusException
      */
     public Response findById(ID id) throws ResponseStatusException {
         E entity = jpaRepository.findById(id).orElse(null);
@@ -67,9 +66,9 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Creates an entity.
      * 
-     * @param request
-     * @return Response
-     * @throws ResponseStatusException
+     * @param request request
+     * @return Response response
+     * @throws ResponseStatusException ResponseStatusException
      */
     public Response create(Request request) throws ResponseStatusException {
         E entity = mapToEntity(request);
@@ -90,10 +89,10 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Updates an entity.
      * 
-     * @param id
-     * @param request
-     * @return Response
-     * @throws ResponseStatusException
+     * @param id id
+     * @param request request
+     * @return Response response
+     * @throws ResponseStatusException ResponseStatusException
      */
     public Response update(ID id, Request request) throws ResponseStatusException {
         E entity = jpaRepository.findById(id).orElse(null);
@@ -114,9 +113,9 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Deletes an entity.
      * 
-     * @param id
-     * @return Response
-     * @throws ResponseStatusException
+     * @param id id
+     * @return Response response
+     * @throws ResponseStatusException ResponseStatusException
      */
     public boolean delete(ID id) throws ResponseStatusException {
         E entity = jpaRepository.findById(id).orElse(null);
@@ -133,7 +132,10 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Gets the an associated entity by id.
      * 
-     * @param Object primaryKey
+     * @param repository repository
+     * @param primaryKey primaryKey
+     * @param <T> T
+     * @param <PK> PK
      * @return E
      */
     protected <T, PK> T getAssociatedEntity(JpaRepository<T, PK> repository, PK primaryKey) {
@@ -145,8 +147,10 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Gets associated entities by id.
      * 
-     * @param JpaRepository repository
-     * @param List primaryKeys
+     * @param repository repository
+     * @param primaryKeys primaryKeys
+     * @param <T> T
+     * @param <PK> PK
      * @return List
      */
     protected <T, PK> List<T> getAssociatedEntities(JpaRepository<T, PK> repository, List<PK> primaryKeys) {
@@ -156,14 +160,16 @@ public abstract class BaseCrudService<Request, Response, E, ID> {
     /**
      * Maps an entity to a response.
      * 
-     * @param E entity
+     * @param entity entity
+     * @return Response response
      */
     protected abstract Response mapToResponse(E entity);
 
     /**
      * Maps a request to an entity.
      * 
-     * @param Request request
+     * @param request request
+     * @return E entity
      */
     protected abstract E mapToEntity(Request request);
 }

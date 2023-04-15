@@ -18,6 +18,11 @@ public class JwtRevocationService {
      */
     private RevocationRepository revocationRepository;    
 
+    /**
+     * Constructor.
+     * 
+     * @param revocationRepository The repository for revocations
+     */
     public JwtRevocationService(RevocationRepository revocationRepository) {
         this.revocationRepository = revocationRepository;        
     }
@@ -43,6 +48,7 @@ public class JwtRevocationService {
      * Check if a token is revoked.
      * 
      * @param token The token to check
+     * @return True if the token is revoked, false otherwise
      */
     public boolean isRevoked(String token) {
         return revocationRepository.existsById(token);

@@ -77,7 +77,7 @@ public class BaseTestDummy {
         /*
          * Returns the dummy repository
          */
-        public JpaRepository getDummyRepository() {
+        public JpaRepository<DummyEntity, Long> getDummyRepository() {
             return jpaRepository;
         }
 

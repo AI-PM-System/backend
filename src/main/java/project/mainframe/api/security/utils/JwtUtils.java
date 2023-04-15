@@ -48,6 +48,11 @@ public class JwtUtils {
      */
     @Value("${jwt.audience}")
     private String AUDIENCE;
+
+    /**
+     * No-args constructor
+     */
+    public JwtUtils() {}
     
     /**
      * Generates a JWT token for a given username and list of authorities
@@ -94,7 +99,7 @@ public class JwtUtils {
     /**
      * Returns the expiration date of a JWT token
      * 
-     * @param token the JWT token to parse
+     * @param claims the JWT claims
      * @return the expiration date of the token
      */
     public LocalDateTime getJwtTokenExpirationDate(Claims claims) {
@@ -108,7 +113,7 @@ public class JwtUtils {
     /**
      * Returns the authorities of a JWT token
      * 
-     * @param token the JWT token to parse
+     * @param claims the JWT claims
      * @return the authorities of the token
      */
     public List<SimpleGrantedAuthority> getAuthorities(Claims claims) {

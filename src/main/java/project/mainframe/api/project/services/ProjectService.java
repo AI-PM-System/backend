@@ -42,6 +42,10 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
+     * @param eventRepository The event repository.
+     * @param artifactRepository The artifact repository.
+     * @param roleRepository The role repository.
+     * @param memberRepository The member repository.
      */
     public ProjectService(
         JpaRepository<Project, Long> jpaRepository,
@@ -60,8 +64,8 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
     /**
      * Maps an entity to a response.
      * 
-     * @param entity
-     * @return ProjectResponse
+     * @param entity The entity to map.
+     * @return ProjectResponse response
      */
     @Override
     protected ProjectResponse mapToResponse(Project entity) {
@@ -71,8 +75,8 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
     /**
      * Maps a request to an entity.
      * 
-     * @param request
-     * @return Project
+     * @param request The request to map.
+     * @return Project entity
      */
     @Override
     protected Project mapToEntity(ProjectRequest request) {

@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.dto.role.RoleResponse;
@@ -15,7 +14,6 @@ import project.mainframe.api.project.entities.Member;
 /**
  * Member response.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -48,7 +46,7 @@ public class MemberResponse {
 
     /**
      * Constructor.
-     * @param member
+     * @param member The member to map.
      */
     public MemberResponse(Member member) {
         this.id = member.getId();
@@ -57,4 +55,9 @@ public class MemberResponse {
         this.user = new UserResponse(member.getUser());
         this.isAI = member.isAI();
     }
+
+    /**
+     * No-args constructor
+     */
+    public MemberResponse() {}
 }

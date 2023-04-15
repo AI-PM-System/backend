@@ -2,7 +2,6 @@ package project.mainframe.api.project.dto.artifact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Artifact;
@@ -10,7 +9,6 @@ import project.mainframe.api.project.entities.Artifact;
 /**
  * Artifact response.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -28,10 +26,15 @@ public class ArtifactResponse {
 
     /**
      * Constructor.
-     * @param artifact
+     * @param artifact The artifact to map.
      */
     public ArtifactResponse(Artifact artifact) {
         this.id = artifact.getId();
         this.project = new ProjectResponse(artifact.getProject());
     }
+
+    /**
+     * No-args constructor
+     */
+    public ArtifactResponse() {}
 }

@@ -79,10 +79,10 @@ public class SecurityConfig implements ApplicationRunner {
      * 
      * Constructor.
      * 
-     * @param authenticatableRepository
-     * @param authenticatableDetailsService
-     * @param jwtRevocationService
-     * @param jwtUtils
+     * @param authenticatableRepository The repository used to load the user from the database
+     * @param authenticatableDetailsService The service used to load the user from the database
+     * @param jwtRevocationService The service used to revoke JWT tokens
+     * @param jwtUtils The service used to generate and validate JWT tokens
      */
     public SecurityConfig(
         AuthenticatableRepository authenticatableRepository,                   
@@ -99,7 +99,7 @@ public class SecurityConfig implements ApplicationRunner {
      * Creates the default user.
      * 
      * @param args the application arguments
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -124,7 +124,7 @@ public class SecurityConfig implements ApplicationRunner {
      * 
      * @param http the HTTP security
      * @return the security filter chain
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {   
@@ -134,24 +134,44 @@ public class SecurityConfig implements ApplicationRunner {
         http.authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/h2*/**").permitAll()
             .requestMatchers("/error").permitAll()
-            .requestMatchers("/projects").permitAll()
-            .requestMatchers("/projects/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/projects/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PATCH, "/api/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+            .requestMatchers("/actuator/**").permitAll()
+
+            .requestMatchers(HttpMethod.GET, "/api/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.PATCH, "/api/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/public/**").permitAll()
+
+            .requestMatchers(HttpMethod.GET, "/api/v1/user/**").hasRole("USER")
+            .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasRole("USER")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasRole("USER")
+            .requestMatchers(HttpMethod.PATCH, "/api/v1/user/**").hasRole("USER")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasRole("USER")
+
+            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**").hasRole("ADMIN")
+            
         .anyRequest().authenticated())
         .addFilterBefore(
             new JwtAuthenticationFilter(
-                new AntPathRequestMatcher("/api/**"), 
+                new AntPathRequestMatcher("/api/v1/user/**"), 
                 jwtUtils, 
                 authenticationManager(), 
                 jwtRevocationService, 
-                MAX_TOKEN_LENGTH), 
-            // Add the JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter
+                MAX_TOKEN_LENGTH
+            ), 
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(
+            new JwtAuthenticationFilter(
+                new AntPathRequestMatcher("/api/v1/admin/**"), 
+                jwtUtils, 
+                authenticationManager(), 
+                jwtRevocationService, 
+                MAX_TOKEN_LENGTH
+            ), 
             UsernamePasswordAuthenticationFilter.class); 
 
     return http.build();
@@ -172,7 +192,7 @@ public class SecurityConfig implements ApplicationRunner {
      * Configures the authentication manager.
      * 
      * @return the authentication manager
-     * @throws Exception
+     * @throws Exception if an error occurs
      */
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {

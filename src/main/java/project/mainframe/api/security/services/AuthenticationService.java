@@ -41,9 +41,9 @@ public class AuthenticationService {
     /**
      * This constructor is called by Spring when the application starts.
      * 
-     * @param jwtUtils
-     * @param authenticatableDetailsService
-     * @param passwordEncoder
+     * @param jwtUtils The service responsible for generating and validating JWT tokens
+     * @param authenticatableDetailsService The service responsible for loading users from the database
+     * @param passwordEncoder The service responsible for encoding passwords
      */
     public AuthenticationService(JwtUtils jwtUtils, AuthenticatableDetailsService authenticatableDetailsService, PasswordEncoder passwordEncoder) {
         this.jwtUtils = jwtUtils;

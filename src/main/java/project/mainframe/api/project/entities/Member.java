@@ -11,13 +11,11 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * A member is a person who is part of a project.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -49,6 +47,11 @@ public class Member {
      */
     @ManyToOne(optional = true)
     private User user;
+
+    /**
+     * No-args constructor
+     */
+    public Member() {}
 
     /**
      * A member is automatically an AI if no user is assigned.

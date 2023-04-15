@@ -4,14 +4,12 @@ import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.entities.Event;
 
 /**
  * Event request.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -54,7 +52,7 @@ public class EventRequest {
 
     /**
      * Constructor.
-     * @param event
+     * @param event The event to map.
      */
     public EventRequest(Event event) {
         id = event.getId();
@@ -65,4 +63,9 @@ public class EventRequest {
         location = event.getLocation();
         agenda = event.getAgenda();
     }
+
+    /**
+     * No-args constructor
+     */
+    public EventRequest() {}
 }

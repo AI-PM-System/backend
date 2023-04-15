@@ -10,11 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ApiApplication {
 
 	/**
+     * No-args constructor
+     */
+	public ApiApplication() {}
+
+	/**
 	 * The main method.
-	 * @param args
+	 * @param args The arguments
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
-
 }

@@ -24,6 +24,7 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
+     * @param projectRepository The project repository.
      */
     public EventService(
         JpaRepository<Event, Long> jpaRepository,
@@ -36,8 +37,8 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
     /**
      * Maps an entity to a response.
      * 
-     * @param entity
-     * @return EventResponse
+     * @param entity The entity to map.
+     * @return EventResponse The response.
      */
     @Override
     protected EventResponse mapToResponse(Event entity) {
@@ -47,8 +48,8 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
     /**
      * Maps a request to an entity.
      * 
-     * @param request
-     * @return Event
+     * @param request The request to map.
+     * @return Event The entity.
      */
     @Override
     protected Event mapToEntity(EventRequest request) {

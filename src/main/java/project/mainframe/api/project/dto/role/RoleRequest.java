@@ -4,13 +4,11 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Role request.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -40,4 +38,9 @@ public class RoleRequest {
      * The role's project id
      */
     private Long projectId;
+
+    /**
+     * No-args constructor
+     */
+    public RoleRequest() {}
 }

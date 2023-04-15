@@ -4,13 +4,11 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Project request.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -45,4 +43,9 @@ public class ProjectRequest {
      * The project's artifact ids
      */
     private List<Long> artifactIds;
+
+    /**
+     * No-args constructor
+     */
+    public ProjectRequest() {}
 }

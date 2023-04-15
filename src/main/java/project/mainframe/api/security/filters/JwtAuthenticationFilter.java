@@ -116,8 +116,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
      * 
      * @throws IOException if an I/O error occurs
      * 
-     * @throws ServletException if an error occurs
-     * 
      * @throws JwtAuthenticationException if the token is invalid
      * 
      * @throws JwtSanitizerException if the token is too long

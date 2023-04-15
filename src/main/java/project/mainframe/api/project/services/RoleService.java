@@ -24,6 +24,7 @@ public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
+     * @param projectRepository The project repository to use for CRUD operations.
      */
     public RoleService(
         JpaRepository<Role, Long> jpaRepository,
@@ -36,8 +37,8 @@ public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role
     /**
      * Maps an entity to a response.
      * 
-     * @param entity
-     * @return EventResponse
+     * @param entity The entity to map.
+     * @return EventResponse response
      */
     @Override
     protected RoleResponse mapToResponse(Role entity) {
@@ -47,8 +48,8 @@ public class RoleService extends BaseCrudService<RoleRequest, RoleResponse, Role
     /**
      * Maps a request to an entity.
      * 
-     * @param request
-     * @return Event
+     * @param request The request to map.
+     * @return Event entity
      */
     @Override
     protected Role mapToEntity(RoleRequest request) {

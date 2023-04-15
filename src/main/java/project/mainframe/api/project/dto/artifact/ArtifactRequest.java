@@ -2,13 +2,11 @@ package project.mainframe.api.project.dto.artifact;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * Artifact request.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -23,4 +21,9 @@ public class ArtifactRequest {
      * The artifact's project id
      */
     private Long projectId;
+
+    /**
+     * No-args constructor
+     */
+    public ArtifactRequest() {}
 }

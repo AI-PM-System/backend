@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import project.mainframe.api.base.services.BaseCrudService;
 
@@ -17,10 +16,9 @@ import project.mainframe.api.base.services.BaseCrudService;
  * 
  * @param <Request> Request
  * @param <Response> Response
- * @param <E> E
+ * @param <E> Entity
  * @param <ID> ID
  */
-@RestController
 public abstract class BaseCrudController<Request, Response, E, ID> {
     
     /**
@@ -31,7 +29,7 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Constructor.
      * 
-     * @param baseCrudService
+     * @param baseCrudService baseCrudService
      */
     public BaseCrudController(BaseCrudService<Request, Response, E, ID> baseCrudService) {
         this.baseCrudService = baseCrudService;
@@ -40,7 +38,7 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Finds all entities.
      * 
-     * @return List<Response>
+     * @return List
      */
     @GetMapping
     public List<Response> findAll() {
@@ -50,7 +48,7 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Finds an entity by id.
      * 
-     * @param id
+     * @param id id
      * @return Response
      */
     @GetMapping("/{id}")
@@ -61,8 +59,8 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Creates an entity.
      * 
-     * @param request
-     * @return Response
+     * @param request request
+     * @return Response 
      */
     @PostMapping
     public Response create(@RequestBody Request request) {
@@ -72,8 +70,9 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Updates an entity.
      * 
-     * @param request
-     * @return Response
+     * @param id id
+     * @param request request
+     * @return Response 
      */
     @PutMapping("/{id}")
     public Response update(@PathVariable ID id, @RequestBody Request request) {
@@ -83,7 +82,7 @@ public abstract class BaseCrudController<Request, Response, E, ID> {
     /**
      * Deletes an entity.
      * 
-     * @param id
+     * @param id id
      */
     @DeleteMapping("/{id}")
     public void delete(@PathVariable ID id) {

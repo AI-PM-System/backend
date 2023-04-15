@@ -2,7 +2,6 @@ package project.mainframe.api.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,7 +11,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
     
@@ -25,4 +23,9 @@ public class AuthenticationRequest {
      * The password of the user.
      */
     private String password;
+
+    /**
+     * No-args constructor
+     */
+    public AuthenticationRequest() {}
 }

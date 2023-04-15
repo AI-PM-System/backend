@@ -12,13 +12,11 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * A role is a position in a project.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -56,4 +54,9 @@ public class Role {
      */
     @ManyToOne
     private Project project;
+
+    /**
+     * No-args constructor
+     */
+    public Role() {}
 }

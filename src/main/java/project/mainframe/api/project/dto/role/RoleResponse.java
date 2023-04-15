@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.mainframe.api.project.dto.member.MemberResponse;
 import project.mainframe.api.project.dto.project.ProjectResponse;
@@ -14,7 +13,6 @@ import project.mainframe.api.project.entities.Role;
 /**
  * Role response.
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -47,7 +45,7 @@ public class RoleResponse {
 
     /**
      * Constructor.
-     * @param role
+     * @param role The role to map.
      */
     public RoleResponse(Role role) {
         this.id = role.getId();
@@ -56,4 +54,9 @@ public class RoleResponse {
         this.members = role.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
         this.project = new ProjectResponse(role.getProject());
     }
+
+    /**
+     * No-args constructor
+     */
+    public RoleResponse() {}
 }

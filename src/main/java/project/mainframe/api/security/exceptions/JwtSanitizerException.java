@@ -17,7 +17,8 @@ public class JwtSanitizerException extends RuntimeException {
     /**
      * Constructor.
      *
-     * @param msg
+     * @param msg The message
+     * @param cause The cause
      */
     public JwtSanitizerException(String msg, Throwable cause) {
         super(msg, cause);

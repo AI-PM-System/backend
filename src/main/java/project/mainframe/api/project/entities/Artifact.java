@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -25,7 +24,6 @@ import lombok.Getter;
  * - A task
  * - A diagram
  */
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
@@ -46,4 +44,9 @@ public class Artifact {
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;
+
+    /**
+     * No-args constructor
+     */
+    public Artifact() {}
 }

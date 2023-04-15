@@ -21,7 +21,7 @@ import project.mainframe.api.base.services.BaseCrudService;
  * @param <ID> ID
  */
 @RestController
-public class BaseCrudController<Request, Response, E, ID> {
+public abstract class BaseCrudController<Request, Response, E, ID> {
     
     /**
      * The generic service.

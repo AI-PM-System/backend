@@ -34,11 +34,12 @@ public class SampleData implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        /*projectRepository.saveAll(
-            List.of(
-                Project.builder().name("name").description("description").build(),
-                Project.builder().name("name2").description("description2").build()
-            )
-        );*/
+        if (projectRepository.findByName("name") != null) {
+            projectRepository.save(Project.builder().name("name").description("description").build());
+        }
+
+        if (projectRepository.findByName("name2") != null) {
+            projectRepository.save(Project.builder().name("name2").description("description2").build());
+        }
     }
 }

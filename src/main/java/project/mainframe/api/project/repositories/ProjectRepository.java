@@ -10,4 +10,12 @@ import project.mainframe.api.project.entities.Project;
  */
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
+
+    /**
+     * Find a project by name.
+     * 
+     * @param name The name of the project.
+     * @return Project
+     */
+    Project findByName(String name);
 }

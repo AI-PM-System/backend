@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -27,9 +26,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @Entity
-public class Artifact {
+public abstract class Artifact {
     
     /**
      * The id of the artifact

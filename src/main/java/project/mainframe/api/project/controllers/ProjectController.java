@@ -13,7 +13,7 @@ import project.mainframe.api.project.entities.Project;
  * Project controller.
  */
 @RestController
-@RequestMapping("/api/v1/public/projects")
+@RequestMapping("/api/v1/user/projects")
 public class ProjectController extends BaseCrudController<ProjectRequest, ProjectResponse, Project, Long> {
 
     /**

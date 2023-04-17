@@ -30,7 +30,7 @@ public class ArtifactResponse {
      */
     public ArtifactResponse(Artifact artifact) {
         this.id = artifact.getId();
-        this.project = new ProjectResponse(artifact.getProject());
+        //this.project = new ProjectResponse(artifact.getProject());
     }
 
     /**

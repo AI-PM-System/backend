@@ -1,9 +1,14 @@
 package project.mainframe.api.project.services;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import project.mainframe.api.base.services.BaseCrudService;
+import project.mainframe.api.chat.entities.Chat;
+import project.mainframe.api.chat.enums.ChatType;
+import project.mainframe.api.chat.repositories.ChatRepository;
 import project.mainframe.api.project.dto.project.ProjectRequest;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Project;
@@ -39,6 +44,11 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
     private MemberRepository memberRepository;
 
     /**
+     * The chat repository.
+     */
+    private ChatRepository chatRepository;
+
+    /**
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
@@ -46,19 +56,22 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
      * @param artifactRepository The artifact repository.
      * @param roleRepository The role repository.
      * @param memberRepository The member repository.
+     * @param chatRepository The chat repository.
      */
     public ProjectService(
         JpaRepository<Project, Long> jpaRepository,
         EventRepository eventRepository,
         ArtifactRepository artifactRepository,
         RoleRepository roleRepository,
-        MemberRepository memberRepository
+        MemberRepository memberRepository,
+        ChatRepository chatRepository
     ) {
         super(jpaRepository);
         this.eventRepository = eventRepository;
         this.artifactRepository = artifactRepository;
         this.roleRepository = roleRepository;
         this.memberRepository = memberRepository;
+        this.chatRepository = chatRepository;
     }
 
     /**
@@ -69,7 +82,11 @@ public class ProjectService extends BaseCrudService<ProjectRequest, ProjectRespo
      */
     @Override
     protected ProjectResponse mapToResponse(Project entity) {
-        return new ProjectResponse(entity);
+        // Get the main chat for the project.
+        List<Chat> mainChats = chatRepository.findAllByTypeAndProjectId(ChatType.MAIN, entity.getId());
+        Chat mainChat = mainChats.size() > 0 ? mainChats.get(0) : null;
+
+        return new ProjectResponse(entity, mainChat);
     }
 
     /**

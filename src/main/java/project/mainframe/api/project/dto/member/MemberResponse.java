@@ -1,5 +1,6 @@
 package project.mainframe.api.project.dto.member;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,8 +52,8 @@ public class MemberResponse {
     public MemberResponse(Member member) {
         this.id = member.getId();
         this.roles = member.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());
-        this.project = new ProjectResponse(member.getProject());
-        this.user = new UserResponse(member.getUser());
+        //this.project = new ProjectResponse(member.getProject());
+        this.user = member.getUser() != null ? new UserResponse(member.getUser()) : null;
         this.isAI = member.isAI();
     }
 

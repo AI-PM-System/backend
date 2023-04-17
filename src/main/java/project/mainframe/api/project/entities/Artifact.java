@@ -33,7 +33,7 @@ public abstract class Artifact {
      * The id of the artifact
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     /**

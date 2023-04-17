@@ -57,7 +57,7 @@ public class EventResponse {
      */
     public EventResponse(Event event) {
         this.id = event.getId();
-        this.project = new ProjectResponse(event.getProject());
+        //this.project = new ProjectResponse(event.getProject());
         this.name = event.getName();
         this.startDateTime = event.getStartDateTime();
         this.endDateTime = event.getEndDateTime();

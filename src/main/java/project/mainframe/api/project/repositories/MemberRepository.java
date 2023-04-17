@@ -10,4 +10,13 @@ import project.mainframe.api.project.entities.Member;
  */
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
+    /**
+     * Find a member by project id and user's username.
+     * 
+     * @param projectId The project id of the member.
+     * @param username The username of the member.
+     * @return Member
+     */
+    Member findByProjectIdAndUserUsername(Long projectId, String username);
 }

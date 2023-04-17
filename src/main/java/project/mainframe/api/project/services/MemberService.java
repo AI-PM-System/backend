@@ -7,6 +7,7 @@ import project.mainframe.api.base.services.BaseCrudService;
 import project.mainframe.api.project.dto.member.MemberRequest;
 import project.mainframe.api.project.dto.member.MemberResponse;
 import project.mainframe.api.project.entities.Member;
+import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
 import project.mainframe.api.project.repositories.RoleRepository;
 import project.mainframe.api.project.repositories.UserRepository;
@@ -77,5 +78,18 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
         member.setRoles(getAssociatedEntities(roleRepository, request.getRoleIds()));
 
         return member;
+    }
+
+    /**
+     * Find a member by project id and user's username.
+     * 
+     * @param projectId The project id of the member.
+     * @param username The username of the member.
+     * @return Member
+     */
+    public MemberResponse findByProjectIdAndUserUsername(Long projectId, String username) {
+        MemberRepository memberRepository = (MemberRepository) jpaRepository;
+        Member member = memberRepository.findByProjectIdAndUserUsername(projectId, username);
+        return new MemberResponse(member);
     }
 }

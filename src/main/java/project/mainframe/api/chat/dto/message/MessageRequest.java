@@ -21,6 +21,11 @@ public class MessageRequest {
      * The message's member id
      */
     private Long memberId;
+
+    /**
+     * The message's user's username
+     */
+    private String username;
     
     /**
      * The message's content

@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import project.mainframe.api.project.entities.Member;
+import project.mainframe.api.project.entities.User;
 
 /**
  * A message is a single message in a chat.
@@ -42,8 +44,14 @@ public class Message {
     /**
      * A message belongs to one member
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Member member;
+
+    /**
+     * A message belongs to one user
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    private User user;
 
     /**
      * What is the content of the message?

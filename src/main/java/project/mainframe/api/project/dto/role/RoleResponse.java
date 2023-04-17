@@ -51,8 +51,8 @@ public class RoleResponse {
         this.id = role.getId();
         this.name = role.getName();
         this.description = role.getDescription();
-        this.members = role.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
-        this.project = new ProjectResponse(role.getProject());
+        //this.members = role.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
+        //this.project = new ProjectResponse(role.getProject());
     }
 
     /**

@@ -1,6 +1,7 @@
 package project.mainframe.api.chat.dto.chat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import project.mainframe.api.chat.entities.Chat;
+import project.mainframe.api.chat.enums.ChatType;
 
 /**
  * Message response.
@@ -36,6 +38,11 @@ public class ChatResponse {
      * The chat's name
      */
     private String name;
+
+    /**
+     * The chat's type
+     */
+    private ChatType type;
     
     /**
      * The chat's timestamp
@@ -54,9 +61,10 @@ public class ChatResponse {
      */
     public ChatResponse(Chat chat) {
         this.id = chat.getId();
-        this.projectId = chat.getProject().getId();
-        this.memberIds = chat.getMembers().stream().map(member -> member.getId()).collect(Collectors.toList());
+        this.projectId = chat.getProject() != null ? chat.getProject().getId() : null;
+        this.memberIds = chat.getMembers() != null ? chat.getMembers().stream().map(m -> m.getId()).collect(Collectors.toList()) : new ArrayList<>();
         this.name = chat.getName();
         this.created = chat.getCreated();
+        this.type = chat.getType();
     }
 }

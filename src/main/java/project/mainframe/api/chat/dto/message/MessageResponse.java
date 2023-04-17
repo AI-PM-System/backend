@@ -2,11 +2,14 @@ package project.mainframe.api.chat.dto.message;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import project.mainframe.api.chat.entities.Message;
 import project.mainframe.api.project.dto.member.MemberResponse;
+import project.mainframe.api.project.dto.user.UserResponse;
 
 /**
  * Message response.
@@ -30,6 +33,11 @@ public class MessageResponse {
      * The message's member
      */
     private MemberResponse member;
+
+    /**
+     * The member's user
+     */
+    private UserResponse user;
     
     /**
      * The message's content
@@ -39,6 +47,7 @@ public class MessageResponse {
     /**
      * The message's timestamp
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime sent;
     
     /**
@@ -54,7 +63,8 @@ public class MessageResponse {
     public MessageResponse(Message message) {
         this.id = message.getId();
         this.chatId = message.getChat().getId();
-        this.member = new MemberResponse(message.getMember());
+        this.member = message.getMember() != null ? new MemberResponse(message.getMember()) : null;
+        this.user = message.getMember().getUser() != null ? new UserResponse(message.getMember().getUser()) : null;
         this.content = message.getContent();
         this.sent = message.getSent();
     }

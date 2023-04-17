@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import project.mainframe.api.chat.enums.ChatType;
 import project.mainframe.api.project.entities.Member;
 import project.mainframe.api.project.entities.Project;
 
@@ -41,6 +42,12 @@ public class Chat {
      */
     @Column(nullable = false)
     private String name;
+
+    /**
+     * What type of chat is this?
+     */
+    @Column(nullable = false)
+    private ChatType type;
 
     /**
      * A chat belongs to one project

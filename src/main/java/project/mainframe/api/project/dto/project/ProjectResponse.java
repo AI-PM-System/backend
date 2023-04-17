@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import project.mainframe.api.chat.dto.chat.ChatResponse;
+import project.mainframe.api.chat.entities.Chat;
 import project.mainframe.api.project.dto.artifact.ArtifactResponse;
 import project.mainframe.api.project.dto.event.EventResponse;
 import project.mainframe.api.project.dto.member.MemberResponse;
@@ -56,16 +58,23 @@ public class ProjectResponse {
     private List<ArtifactResponse> artifacts;
 
     /**
+     * The project's chats
+     */
+    private ChatResponse mainChat;
+
+    /**
      * Constructor.
      * @param project The project to map.
      */
-    public ProjectResponse(Project project) {
+    public ProjectResponse(Project project, Chat mainChat) {
         this.id = project.getId();
         this.name = project.getName();
+        this.description = project.getDescription();
         this.events = project.getEvents().stream().map(EventResponse::new).collect(Collectors.toList());
         this.members = project.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
         this.roles = project.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());
         this.artifacts = project.getArtifacts().stream().map(ArtifactResponse::new).collect(Collectors.toList());
+        this.mainChat = new ChatResponse(mainChat);
     }
 
     /**

@@ -4,6 +4,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import project.mainframe.api.chat.entities.Chat;
 
 
 /**
@@ -45,23 +47,29 @@ public class Project {
     private String description;
 
     /**
-     * Has many project events
+     * Has many project events and set eager loading
      */
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     private List<Event> events;
 
     /**
      * Has many members
      */
-    @OneToMany
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     private List<Member> members;
 
     /**
      * Has many roles
      */
-    @OneToMany
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     private List<Role> roles;
 
+    /**
+     * Has many chats
+     */
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+    private List<Chat> chats;
+    
     /**
      * Has many artifacts
      */

@@ -29,25 +29,25 @@ public class User extends Authenticatable {
     /**
      * The user's first name
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String firstName;
 
     /**
      * The user's last name
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String lastName;
 
     /**
      * The user's email address
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String email;
 
     /**
      * The user's phone number
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String phoneNumber;
 
     /**

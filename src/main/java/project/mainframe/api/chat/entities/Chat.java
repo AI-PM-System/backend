@@ -34,7 +34,7 @@ public class Chat {
      * The id of the chat
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     /**

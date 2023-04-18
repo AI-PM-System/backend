@@ -133,6 +133,16 @@ public class SampleData implements ApplicationRunner {
         event.setProject(project);
         event = eventRepository.save(event);
 
+     
+        Event event2 = new Event();
+        event2.setName("Sprint 2");
+        event2.setAgenda("Agenda for Sprint 2");
+        event2.setLocation("Location for Sprint 2");
+        event2.setStartDateTime(LocalDateTime.now());
+        event2.setEndDateTime(LocalDateTime.now().plusHours(1));
+        event2.setProject(project);
+        event2 = eventRepository.save(event2);
+
         // Convert role1 and role2 to a list
         List<Role> roles = new ArrayList<>();
         roles.add(role1);

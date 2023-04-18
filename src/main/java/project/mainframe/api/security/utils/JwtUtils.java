@@ -97,6 +97,17 @@ public class JwtUtils {
     }
 
     /**
+     * Parses and validates by the authorization header and returns the claims of a JWT token
+     * 
+     * @param header the authorization header
+     * @return claims of the token
+     */
+    public Claims parseAndValidateJwtTokenByHeader(String header) {
+        String token = header.replace("Bearer ", "");
+        return parseAndValidateJwtToken(token);
+    }
+
+    /**
      * Returns the expiration date of a JWT token
      * 
      * @param claims the JWT claims

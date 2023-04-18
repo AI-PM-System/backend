@@ -31,28 +31,20 @@ public class ChatService extends BaseCrudService<ChatRequest, ChatResponse, Chat
     private MemberRepository memberRepository;
 
     /**
-     * The message repository.
-     */
-    private MessageService messageService;
-
-    /**
      * Constructor.
      * 
      * @param jpaRepository The repository to use for CRUD operations.
      * @param projectRepository The project repository.
      * @param memberRepository The member repository.
-     * @param messageService The message service.
      */
     public ChatService(
         JpaRepository<Chat, Long> jpaRepository,
         ProjectRepository projectRepository,
-        MemberRepository memberRepository,
-        MessageService messageService
+        MemberRepository memberRepository
     ) {
         super(jpaRepository);
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
-        this.messageService = messageService;
     }
 
     /**
@@ -83,19 +75,17 @@ public class ChatService extends BaseCrudService<ChatRequest, ChatResponse, Chat
     }
 
     /**
-     * Create a new chat without a project with a specific type.
+     * Create a new chat by type and name.
      * 
-     * @param request The request.
+     * @param type The type of chat.
+     * @param name The name of the chat.
      * @return ChatResponse The response.
      */
-    public MessageResponse create(ChatType type, String name, MessageRequest messageRequest) {
+    public ChatResponse create(ChatType type, String name) {
         Chat chat = new Chat();
         chat.setName(name);
         chat.setType(type);
-        chat = jpaRepository.save(chat);
 
-        messageRequest.setChatId(chat.getId());
-
-        return messageService.create(messageRequest);
+        return mapToResponse(jpaRepository.save(chat));
     }
 }

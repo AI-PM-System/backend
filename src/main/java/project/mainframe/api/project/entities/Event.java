@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @Entity
+@Table(name = "events")
 public class Event {
     
     /**
@@ -34,7 +36,7 @@ public class Event {
     /**
      * One meeting belongs to one project
      */
-    @OneToOne(optional = false)
+    @OneToOne()
     private Project project;
 
     /**
@@ -46,25 +48,25 @@ public class Event {
     /**
      * What date and time is the meeting?
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime startDateTime;
 
     /**
      * When is the meeting over?
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDateTime endDateTime;
 
     /**
      * What is the location of the meeting?
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String location;
 
     /**
      * What is the agenda of the meeting?
      */
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String agenda;
 
     /**

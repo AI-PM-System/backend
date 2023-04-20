@@ -56,7 +56,7 @@ public class Message {
     /**
      * What is the content of the message?
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10000)
     private String content;
 
     /**
@@ -69,5 +69,20 @@ public class Message {
      * No-args constructor
      */
     public Message() {}
+
+    /**
+     * Constructor
+     * 
+     * @param chat
+     * @param member
+     * @param user
+     * @param content
+     */
+    public Message(Chat chat, Member member, User user, String content) {
+        this.chat = chat;
+        this.member = member;
+        this.user = user;
+        this.content = content;
+    }
     
 }

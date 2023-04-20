@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import project.mainframe.api.chat.entities.Chat;
+import project.mainframe.api.chat.entities.Message;
+import project.mainframe.api.chat.repositories.MessageRepository;
 import project.mainframe.api.openAI.dto.completions.CompletionRequest;
 import project.mainframe.api.openAI.dto.completions.CompletionResponse;
 import project.mainframe.api.openAI.exceptions.OpenAIException;
@@ -61,6 +64,7 @@ public class GeneratorService {
      * @param messageRepository The message repository.
      * @param openAIService The OpenAI service.
      * @param generatorCompleterService The generator completer service.
+     * @param generatorGPTService The generator gpt service.
      */
     public GeneratorService(
         GeneratorRepository generatorRepository,
@@ -146,17 +150,17 @@ public class GeneratorService {
 
         GPTResponse gptResponse = null;
         GeneratorMessage completionMessage = null;
-        long mainChatId = 0L;
+        Chat mainChat = null;
         if (isComplete(request.getContent())) {
             List<GeneratorMessage> messages = generator.getMessages();
             gptResponse = generatorGPTService.getProjectJSON(messages);
-            mainChatId = generatorCompleterService.complete(generator, gptResponse, user);
+            mainChat = generatorCompleterService.complete(generator, gptResponse, user);
 
             completionMessage = generatorMessageRepository.save(new GeneratorMessage(
                 "Project completed!",
                 generator,
                 null
-            ));
+            ));            
         } else {
             // Create help message
             CompletionResponse _completionResponse = generatorGPTService.getHelpMessage(message.getContent());
@@ -180,7 +184,8 @@ public class GeneratorService {
         //messageResponses.add(new MessageResponse(message, gptResponse));
         messageResponses.add(new MessageResponse(completionMessage, gptResponse));
 
-        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), mainChatId);
+        long chatId = mainChat != null ? mainChat.getId() : 0L;
+        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), chatId);
     }
 
     /**

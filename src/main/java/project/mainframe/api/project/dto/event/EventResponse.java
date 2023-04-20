@@ -2,6 +2,8 @@ package project.mainframe.api.project.dto.event;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,11 +36,13 @@ public class EventResponse {
     /**
      * The start date time
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startDateTime;
 
     /**
      * The end date time
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endDateTime;
 
     /**
@@ -54,15 +58,25 @@ public class EventResponse {
     /**
      * Constructor.
      * @param event The event to map.
+     * @param includeProject Whether to include the project.
      */
-    public EventResponse(Event event) {
+    public EventResponse(Event event, boolean includeProject) {
         this.id = event.getId();
-        //this.project = new ProjectResponse(event.getProject());
         this.name = event.getName();
         this.startDateTime = event.getStartDateTime();
         this.endDateTime = event.getEndDateTime();
         this.location = event.getLocation();
         this.agenda = event.getAgenda();
+        if (includeProject)
+            this.project = new ProjectResponse(event.getProject());
+    }
+
+    /**
+     * Constructor.
+     * @param event The event to map.
+     */
+    public EventResponse(Event event) {
+        this(event, true);
     }
 
     /**

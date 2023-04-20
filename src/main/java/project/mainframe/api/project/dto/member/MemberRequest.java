@@ -35,6 +35,11 @@ public class MemberRequest {
     private String username;
 
     /**
+     * Whether the member is a project admin
+     */
+    private boolean admin;
+
+    /**
      * No-args constructor
      */
     public MemberRequest() {}

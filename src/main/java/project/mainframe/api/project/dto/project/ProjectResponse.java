@@ -59,9 +59,9 @@ public class ProjectResponse {
         this.id = project.getId();
         this.name = project.getName();
         this.description = project.getDescription();
-        this.events = project.getEvents().stream().map(EventResponse::new).collect(Collectors.toList());
-        this.members = project.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
-        this.roles = project.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());
+        this.events = project.getEvents().stream().map(e->new EventResponse(e, false)).collect(Collectors.toList());
+        this.members = project.getMembers().stream().map(m->new MemberResponse(m, false, false)).collect(Collectors.toList());
+        this.roles = project.getRoles().stream().map(r->new RoleResponse(r, false, false)).collect(Collectors.toList());
     }
 
     /**

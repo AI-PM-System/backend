@@ -36,14 +36,19 @@ public class GPTResponse {
     private List<Map<String, Object>> events;
 
     /**
-     * The artifacts
+     * The boards
      */
-    // private List<Map<String, Object>> artifacts;
+    private List<Map<String, Object>> boards;
 
     /**
-     * The main chat
+     * The board lists
      */
-    // private Map<String, Object> mainChat;
+    private List<Map<String, Object>> boardLists;
+
+    /**
+     * The tasks
+     */
+    private List<Map<String, Object>> tasks;
 
     /**
      * no-args constructor

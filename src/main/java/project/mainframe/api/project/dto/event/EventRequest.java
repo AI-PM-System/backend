@@ -14,11 +14,6 @@ import project.mainframe.api.project.entities.Event;
 @Getter
 @Setter
 public class EventRequest {
-
-    /**
-     * The event id
-     */
-    private Long id;
     
     /**
      * The project id
@@ -55,7 +50,6 @@ public class EventRequest {
      * @param event The event to map.
      */
     public EventRequest(Event event) {
-        id = event.getId();
         projectId = event.getProject().getId();
         name = event.getName();
         startDateTime = event.getStartDateTime();

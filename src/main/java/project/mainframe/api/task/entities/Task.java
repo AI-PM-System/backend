@@ -1,63 +1,66 @@
-package project.mainframe.api.project.entities;
+package project.mainframe.api.task.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import project.mainframe.api.project.entities.Member;
 
 /**
- * A role is a position in a project.
+ * A task is a unit of work that needs to be done.
  */
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
 @Entity
-public class Role {
+public class Task {
     
     /**
-     * The id of the role
+     * The id of the task.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    
     /**
-     * The name of the role
-     */    
-    @Column(nullable = false)
+     * The name of the task.
+     */
     private String name;
     
     /**
-     * The description of the role
+     * The description of the task.
      */
-    @Column(nullable = false, length = 1000)
     private String description;
+
+    /**
+     * The task due date.
+     */
+    private LocalDateTime dueDate;
     
     /**
-     * A role can have multiple members
-     */
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Member> members;
-
-    /**
-     * The project this role belongs to
+     * The task belongs to one board list.
      */
     @ManyToOne
-    private Project project;
+    private BoardList boardList;
 
     /**
-     * No-args constructor
+     * The task belongs to one member.
      */
-    public Role() {}
+    @ManyToOne
+    private Member member;
+    
+    /**
+     * No-args constructor.
+     */
+    public Task() {}
 }

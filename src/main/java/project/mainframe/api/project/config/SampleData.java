@@ -2,6 +2,7 @@ package project.mainframe.api.project.config;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,12 @@ import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
 import project.mainframe.api.project.repositories.RoleRepository;
 import project.mainframe.api.project.repositories.UserRepository;
+import project.mainframe.api.task.entities.Board;
+import project.mainframe.api.task.entities.BoardList;
+import project.mainframe.api.task.entities.Task;
+import project.mainframe.api.task.repositories.BoardListRepository;
+import project.mainframe.api.task.repositories.BoardRepository;
+import project.mainframe.api.task.repositories.TaskRepository;
 
 /**
  * Sample data.
@@ -31,16 +38,69 @@ import project.mainframe.api.project.repositories.UserRepository;
 @Configuration
 public class SampleData implements ApplicationRunner {
 
+    /*
+     * The user repository.
+     */
     private UserRepository userRepository;
+
+    /*
+     * The project repository.
+     */
     private ProjectRepository projectRepository;
+
+    /*
+     * The role repository.
+     */
     private RoleRepository roleRepository;
+
+    /*
+     * The member repository.
+     */
     private MemberRepository memberRepository;
+
+    /*
+     * The event repository.
+     */
     private EventRepository eventRepository;
+
+    /*
+     * The chat repository.
+     */
     private ChatRepository chatRepository;
+
+    /*
+     * The password encoder.
+     */
     private PasswordEncoder passwordEncoder;
+
+    /*
+     * The board repository.
+     */
+    private BoardRepository boardRepository;
+
+    /*
+     * The board list repository.
+     */
+    private BoardListRepository boardListRepository;
+
+    /*
+     * The task repository.
+     */
+    private TaskRepository taskRepository;
 
     /**
      * Constructor.
+     * 
+     * @param userRepository      The user repository.
+     * @param projectRepository   The project repository.
+     * @param roleRepository      The role repository.
+     * @param memberRepository    The member repository.
+     * @param eventRepository     The event repository.
+     * @param chatRepository      The chat repository.
+     * @param passwordEncoder     The password encoder.
+     * @param boardRepository     The board repository.
+     * @param boardListRepository The board list repository.
+     * @param taskRepository      The task repository.
      */
     public SampleData(
         UserRepository userRepository,
@@ -49,7 +109,10 @@ public class SampleData implements ApplicationRunner {
         MemberRepository memberRepository,
         EventRepository eventRepository,
         ChatRepository chatRepository,
-        PasswordEncoder passwordEncoder
+        PasswordEncoder passwordEncoder,
+        BoardRepository boardRepository,
+        BoardListRepository boardListRepository,
+        TaskRepository taskRepository
     ) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
@@ -58,6 +121,9 @@ public class SampleData implements ApplicationRunner {
         this.eventRepository = eventRepository;
         this.chatRepository = chatRepository;
         this.passwordEncoder = passwordEncoder;
+        this.boardRepository = boardRepository;
+        this.boardListRepository = boardListRepository;
+        this.taskRepository = taskRepository;
     }
     
     /**
@@ -110,6 +176,7 @@ public class SampleData implements ApplicationRunner {
         member.setProject(project);
         member.setRoles(Collections.singletonList(role1));
         member.setUser(user);
+        member.setAdmin(true);
         member = memberRepository.save(member);
 
         role1.setMembers(Collections.singletonList(member));
@@ -156,12 +223,50 @@ public class SampleData implements ApplicationRunner {
 
         // Create main chat
         Chat chat = new Chat();
-        chat.setName("Main Chat");
+        chat.setName("Main chat");
         chat.setType(ChatType.MAIN);
         chat.setProject(project);
         chat.setMessages(Collections.emptyList());
         chat.setMembers(members); 
         chat = chatRepository.save(chat);
+
+        // Create board
+        Board board = new Board();
+        board.setName("Main board");
+        board.setProject(project);
+        board = boardRepository.save(board);
+
+        // Create board list
+        BoardList boardList1 = new BoardList();
+        boardList1.setName("To-do");
+        boardList1.setBoard(board);
+        boardList1 = boardListRepository.save(boardList1);
+
+        BoardList boardList2 = new BoardList();
+        boardList2.setName("Progress");
+        boardList2.setBoard(board);
+        boardList2 = boardListRepository.save(boardList2);
+
+        BoardList boardList3 = new BoardList();
+        boardList3.setName("Done");
+        boardList3.setBoard(board);
+        boardList3 = boardListRepository.save(boardList3);
+
+        // Create tasks
+        Task task1 = new Task();
+        task1.setName("Task 1");
+        task1.setDescription("Task 1 description");
+        task1.setBoardList(boardList1);
+        task1 = taskRepository.save(task1);
+
+        Task task2 = new Task();
+        task2.setName("Task 2");
+        task2.setDescription("Task 2 description");
+        task2.setBoardList(boardList1);
+        task2 = taskRepository.save(task2);
+
+        boardList1.setTasks(Arrays.asList(task1, task2));
+        boardList1 = boardListRepository.save(boardList1);
 
         // Update project
         project.setMembers(members);
@@ -169,5 +274,6 @@ public class SampleData implements ApplicationRunner {
         project.setRoles(roles);
         project.setChats(Collections.singletonList(chat));
         project = projectRepository.save(project);
+        
     }
 }

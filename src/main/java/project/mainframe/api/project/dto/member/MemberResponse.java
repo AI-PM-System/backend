@@ -46,15 +46,34 @@ public class MemberResponse {
     private boolean isAI;
 
     /**
+     * Whether the member is a project admin
+     */
+    private boolean admin;
+
+    /**
+     * Constructor.
+     * @param member The member to map.
+     * @param includeProject Whether to include the project in the response.
+     */
+    public MemberResponse(Member member, boolean includeProject, boolean includeRoles) {
+        this.id = member.getId();
+        this.user = member.getUser() != null ? new UserResponse(member.getUser()) : null;
+        this.isAI = member.isAI();
+        this.admin = member.isAdmin();
+        if (includeProject) {
+            this.project = new ProjectResponse(member.getProject());
+        }
+        if (includeRoles) {
+            this.roles = member.getRoles().stream().map(r->new RoleResponse(r, includeProject, false)).collect(Collectors.toList());
+        }
+    }
+
+    /**
      * Constructor.
      * @param member The member to map.
      */
     public MemberResponse(Member member) {
-        this.id = member.getId();
-        this.roles = member.getRoles().stream().map(RoleResponse::new).collect(Collectors.toList());
-        //this.project = new ProjectResponse(member.getProject());
-        this.user = member.getUser() != null ? new UserResponse(member.getUser()) : null;
-        this.isAI = member.isAI();
+        this(member, true, true);
     }
 
     /**

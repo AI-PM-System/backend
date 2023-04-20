@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import project.mainframe.api.project.dto.member.MemberRequest;
 import project.mainframe.api.project.dto.member.MemberResponse;
 import project.mainframe.api.project.entities.Member;
+import project.mainframe.api.project.entities.Role;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
@@ -139,12 +140,22 @@ public class MemberService  {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
         }
 
+        List<Role> roles = roleRepository.findAllById(request.getRoleIds());
+
         Member member = new Member();
         member.setProject(projectRepository.findById(request.getProjectId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found.")));
-        member.setUser(userRepository.findById(request.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")));
-        member.setRoles(roleRepository.findAllById(request.getRoleIds()));
+        member.setUser(userRepository.findById(request.getUsername()).orElse(null));
+        member.setRoles(roles);
+        member.setAdmin(request.isAdmin());
+        member = memberRepository.save(member);
+        
+        // update roles
+        for (Role role : roles) {
+            role.getMembers().add(member);
+        }
+        roleRepository.saveAll(roles);
 
-        return new MemberResponse(memberRepository.save(member));
+        return new MemberResponse(member);
     }
 
     /**
@@ -162,10 +173,26 @@ public class MemberService  {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
         }
 
-        member.setRoles(roleRepository.findAllById(request.getRoleIds()));
-        member.setUser(userRepository.findById(request.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")));
+        List<Role> newRoles = roleRepository.findAllById(request.getRoleIds());
+        List<Role> oldRoles = member.getRoles();
+        // remove member from roles
+        for (Role role : oldRoles) {
+            role.getMembers().remove(member);
+        }
+        roleRepository.saveAll(oldRoles);
 
-        return new MemberResponse(memberRepository.save(member));
+        member.setRoles(newRoles);
+        member.setUser(userRepository.findById(request.getUsername()).orElse(null));
+        member.setAdmin(request.isAdmin());
+        member = memberRepository.save(member);
+
+        // update roles
+        for (Role role : newRoles) {
+            role.getMembers().add(member);
+        }
+        roleRepository.saveAll(newRoles);
+
+        return new MemberResponse(member);
     }
 
     /**

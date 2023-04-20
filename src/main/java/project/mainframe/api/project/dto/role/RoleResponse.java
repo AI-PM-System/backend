@@ -46,13 +46,27 @@ public class RoleResponse {
     /**
      * Constructor.
      * @param role The role to map.
+     * @param includeProject Whether to include the project in the response.
+     * @param includeMembers Whether to include the members in the response.
      */
-    public RoleResponse(Role role) {
+    public RoleResponse(Role role, boolean includeProject, boolean includeMembers) {
         this.id = role.getId();
         this.name = role.getName();
         this.description = role.getDescription();
-        //this.members = role.getMembers().stream().map(MemberResponse::new).collect(Collectors.toList());
-        //this.project = new ProjectResponse(role.getProject());
+        if (includeMembers) {
+            this.members = role.getMembers().stream().map(m->new MemberResponse(m, false, false)).collect(Collectors.toList());
+        }
+        if (includeProject) {
+            this.project = new ProjectResponse(role.getProject());
+        }
+    }
+
+    /**
+     * Constructor.
+     * @param role The role to map.
+     */
+    public RoleResponse(Role role) {
+        this(role, true, true);
     }
 
     /**

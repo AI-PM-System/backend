@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,8 +47,13 @@ public class Member {
     /**
      * The member is an AI if no user is assigned
      */
-    @ManyToOne(optional = true)
+    @OneToOne(optional = true) 
     private User user;
+
+    /**
+     * Is project admin?
+     */
+    private boolean admin;
 
     /**
      * No-args constructor

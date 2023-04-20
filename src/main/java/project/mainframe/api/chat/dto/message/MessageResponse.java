@@ -64,7 +64,7 @@ public class MessageResponse {
         this.id = message.getId();
         this.chatId = message.getChat().getId();
         this.member = message.getMember() != null ? new MemberResponse(message.getMember()) : null;
-        this.user = message.getMember().getUser() != null ? new UserResponse(message.getMember().getUser()) : null;
+        this.user = message.getMember() != null && message.getMember().getUser() != null ? new UserResponse(message.getMember().getUser()) : null;
         this.content = message.getContent();
         this.sent = message.getSent();
     }

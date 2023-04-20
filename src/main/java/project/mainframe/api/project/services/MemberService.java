@@ -1,12 +1,17 @@
 package project.mainframe.api.project.services;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import project.mainframe.api.base.services.BaseCrudService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import project.mainframe.api.project.dto.member.MemberRequest;
 import project.mainframe.api.project.dto.member.MemberResponse;
 import project.mainframe.api.project.entities.Member;
+import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
 import project.mainframe.api.project.repositories.RoleRepository;
@@ -16,8 +21,13 @@ import project.mainframe.api.project.repositories.UserRepository;
  * Member service.
  */
 @Service
-public class MemberService extends BaseCrudService<MemberRequest, MemberResponse, Member, Long>  {
+public class MemberService  {
     
+    /**
+     * The member repository.
+     */
+    private MemberRepository memberRepository;
+
     /**
      * The project repository to use for CRUD operations.
      */
@@ -34,62 +44,143 @@ public class MemberService extends BaseCrudService<MemberRequest, MemberResponse
     private RoleRepository roleRepository;
 
     /**
+     * User Project Restriction service.
+     */
+    private UserProjectRestrictionService userProjectRestrictionService;
+
+    /**
      * Constructor.
      * 
-     * @param jpaRepository The repository to use for CRUD operations.
+     * @param memberRepository The member repository.
      * @param projectRepository The project repository.
      * @param userRepository The user repository.
      * @param roleRepository The role repository.
+     * @param userProjectRestrictionService The user project restriction service.
      */
     public MemberService(
-        JpaRepository<Member, Long> jpaRepository,
+        MemberRepository memberRepository,
         ProjectRepository projectRepository,
         UserRepository userRepository,
-        RoleRepository roleRepository
+        RoleRepository roleRepository,
+        UserProjectRestrictionService userProjectRestrictionService
     ) {
-        super(jpaRepository);
+        this.memberRepository = memberRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userProjectRestrictionService = userProjectRestrictionService;
+    }
+
+
+    /**
+     * find all by project id.
+     * 
+     * @param projectId The project id.
+     * @param user The user.
+     * @return List<MemberResponse>
+     */
+    public List<MemberResponse> findAllByProjectId(Long projectId, User actor) {
+        if (userProjectRestrictionService.isNotMember(projectId, actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+        
+        List<Member> members = memberRepository.findAllByProjectId(projectId);
+        return members.stream().map(MemberResponse::new).collect(Collectors.toList());
     }
 
     /**
-     * Maps an entity to a response.
+     * Find by id.
      * 
-     * @param entity The entity to map.
-     * @return EventResponse The response.
+     * @param id The id.
+     * @param user The user.
+     * @return MemberResponse
      */
-    @Override
-    protected MemberResponse mapToResponse(Member entity) {
-        return new MemberResponse(entity);
-    }
+    public MemberResponse findById(Long id, User actor) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found."));
+        
+        if (userProjectRestrictionService.isNotMember(member.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
 
-    /**
-     * Maps a request to an entity.
-     * 
-     * @param request The request to map.
-     * @return Event The entity.
-     */
-    @Override
-    protected Member mapToEntity(MemberRequest request) {
-        Member member = new Member();
-        member.setProject(getAssociatedEntity(projectRepository, request.getProjectId()));
-        member.setUser(getAssociatedEntity(userRepository, request.getUsername()));
-        member.setRoles(getAssociatedEntities(roleRepository, request.getRoleIds()));
-
-        return member;
-    }
-
-    /**
-     * Find a member by project id and user's username.
-     * 
-     * @param projectId The project id of the member.
-     * @param username The username of the member.
-     * @return Member
-     */
-    public MemberResponse findByProjectIdAndUserUsername(Long projectId, String username) {
-        MemberRepository memberRepository = (MemberRepository) jpaRepository;
-        Member member = memberRepository.findByProjectIdAndUserUsername(projectId, username);
         return new MemberResponse(member);
+    }
+
+    /**
+     * Find by project id and username.
+     * 
+     * @param projectId The project id.
+     * @param username The username.
+     * @param user The user.
+     * @return MemberResponse
+     */
+    public MemberResponse findByProjectIdAndUsername(Long projectId, String username, User actor) {
+        if (userProjectRestrictionService.isNotMember(projectId, actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        Member member = memberRepository.findByProjectIdAndUserUsername(projectId, username);
+
+        if (member == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found.");
+        }
+
+        return new MemberResponse(member);
+    }
+
+    /**
+     * Create a member.
+     * 
+     * @param request The member request.
+     * @param user The user.
+     * @return MemberResponse
+     */
+    public MemberResponse create(MemberRequest request, User actor) {
+        if (userProjectRestrictionService.isNotMember(request.getProjectId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        Member member = new Member();
+        member.setProject(projectRepository.findById(request.getProjectId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found.")));
+        member.setUser(userRepository.findById(request.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")));
+        member.setRoles(roleRepository.findAllById(request.getRoleIds()));
+
+        return new MemberResponse(memberRepository.save(member));
+    }
+
+    /**
+     * Update a member.
+     * 
+     * @param id The id.
+     * @param request The member request.
+     * @param user The user.
+     * @return MemberResponse
+     */
+    public MemberResponse update(Long id, MemberRequest request, User actor) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found."));
+        
+        if (userProjectRestrictionService.isNotMember(member.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        member.setRoles(roleRepository.findAllById(request.getRoleIds()));
+        member.setUser(userRepository.findById(request.getUsername()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.")));
+
+        return new MemberResponse(memberRepository.save(member));
+    }
+
+    /**
+     * Delete a member.
+     * 
+     * @param id The id.
+     * @param user The user.
+     */
+    public void delete(Long id, User actor) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member not found."));
+        
+        if (userProjectRestrictionService.isNotMember(member.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        memberRepository.delete(member);
     }
 }

@@ -1,17 +1,14 @@
-package project.mainframe.api.project.services;
+package project.mainframe.api.project.resolvers;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.security.services.AuthenticatableIdentityService;
 import project.mainframe.api.security.utils.JwtUtils;
 
-/**
- * The User Identity Service.
- */
-@Service
-public class UserIdentityService extends AuthenticatableIdentityService<User, String> {
+@Component
+public class UserResolver extends AuthenticatableIdentityService<User, String> {
 
     /**
      * Constructor.
@@ -19,7 +16,11 @@ public class UserIdentityService extends AuthenticatableIdentityService<User, St
      * @param jwtUtils The jwt utils.
      * @param authenticatableRepository The authenticatable repository.
      */
-    public UserIdentityService(JwtUtils jwtUtils, JpaRepository<User, String> authenticatableRepository) {
+    public UserResolver(JwtUtils jwtUtils, JpaRepository<User, String> authenticatableRepository) {
         super(jwtUtils, authenticatableRepository);
+    }
+
+    public User resolve(String authorization) {
+        return getAuthenticatableIdentity(authorization);
     }
 }

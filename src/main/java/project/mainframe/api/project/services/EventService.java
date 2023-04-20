@@ -1,19 +1,30 @@
 package project.mainframe.api.project.services;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-import project.mainframe.api.base.services.BaseCrudService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import project.mainframe.api.project.dto.event.EventRequest;
 import project.mainframe.api.project.dto.event.EventResponse;
 import project.mainframe.api.project.entities.Event;
+import project.mainframe.api.project.entities.Project;
+import project.mainframe.api.project.entities.User;
+import project.mainframe.api.project.repositories.EventRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
 
 /**
  * Event service.
  */
 @Service
-public class EventService extends BaseCrudService<EventRequest, EventResponse, Event, Long> {
+public class EventService {
+
+    /**
+     * The event repository to use for CRUD operations.
+     */
+    private EventRepository eventRepository;
 
     /**
      * The project repository to use for CRUD operations.
@@ -21,40 +32,137 @@ public class EventService extends BaseCrudService<EventRequest, EventResponse, E
     private ProjectRepository projectRepository;    
 
     /**
+     * User Project Restriction service.
+     */
+    private UserProjectRestrictionService userProjectRestrictionService;
+
+    /**
      * Constructor.
      * 
-     * @param jpaRepository The repository to use for CRUD operations.
+     * @param eventRepository The event repository to use for CRUD operations.
      * @param projectRepository The project repository.
+     * @param userProjectRestrictionService The user project restriction service.
      */
     public EventService(
-        JpaRepository<Event, Long> jpaRepository,
-        ProjectRepository projectRepository
+        EventRepository eventRepository,
+        ProjectRepository projectRepository,
+        UserProjectRestrictionService userProjectRestrictionService
     ) {
-        super(jpaRepository);
+        this.eventRepository = eventRepository;
         this.projectRepository = projectRepository;
+        this.userProjectRestrictionService = userProjectRestrictionService;
     }
 
     /**
-     * Maps an entity to a response.
-     * 
-     * @param entity The entity to map.
-     * @return EventResponse The response.
+     * Find all events.
+     * @param userId The user id.
+     * @param request The request.
+     * @return The list of responses.
      */
-    @Override
-    protected EventResponse mapToResponse(Event entity) {
-        return new EventResponse(entity);
+    public List<EventResponse> findAllByProjectId(Long projectId, User actor) {
+        if (userProjectRestrictionService.isNotMember(projectId, actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        return eventRepository
+            .findAllByProjectId(projectId)
+            .stream()
+            .map(EventResponse::new)
+            .toList();
     }
 
     /**
-     * Maps a request to an entity.
-     * 
-     * @param request The request to map.
-     * @return Event The entity.
+     * Find event by id.
+     * @param id The id.
+     * @param userId The user id.
+     * @param request The request.
+     * @return The response.
      */
-    @Override
-    protected Event mapToEntity(EventRequest request) {
+    public EventResponse findById(Long id, User actor) {
+        Event event = eventRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
+
+        if (userProjectRestrictionService.isNotMember(event.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        return new EventResponse(event);
+    }
+
+    /**
+     * Create event.
+     * @param projectId The project id.
+     * @param userId The user id.
+     * @param request The request.
+     * @return The response.
+     */
+    public EventResponse create(EventRequest request, User actor) {
+        if (userProjectRestrictionService.isNotMember(request.getProjectId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        Project project = projectRepository
+            .findById(request.getProjectId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found."));
+
+        Event event = mapToEntity(request);
+        event.setProject(project);
+
+        return new EventResponse(eventRepository.save(event));
+    }
+
+    /**
+     * Update event.
+     * @param id The id.
+     * @param userId The user id.
+     * @param request The request.
+     * @return The response.
+     */
+    public EventResponse update(Long id, User actor, EventRequest request) {
+        Event event = eventRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
+
+        if (userProjectRestrictionService.isNotMember(event.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        event.setName(request.getName());
+        event.setStartDateTime(request.getStartDateTime());
+        event.setEndDateTime(request.getEndDateTime());
+        event.setLocation(request.getLocation());
+        event.setAgenda(request.getAgenda());
+
+        return new EventResponse(eventRepository.save(event));
+    }
+
+    /**
+     * Delete event.
+     * @param id The id.
+     * @param userId The user id.
+     * @param request The request.
+     * @return The response.
+     */
+    public void delete(Long id, User actor) {
+        Event event = eventRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found."));
+
+        if (userProjectRestrictionService.isNotMember(event.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        eventRepository.delete(event);
+    }
+
+    /**
+     * Map to entity.
+     * @param request
+     * @return The entity.
+     */
+    private Event mapToEntity(EventRequest request) {
         Event event = new Event();
-        event.setProject(getAssociatedEntity(projectRepository, request.getProjectId()));
         event.setName(request.getName());
         event.setStartDateTime(request.getStartDateTime());
         event.setEndDateTime(request.getEndDateTime());

@@ -28,6 +28,11 @@ public class ChatRequest {
      * The chat's name
      */
     private String name;
+
+    /**
+     * The chat's type
+     */
+    private String type;
     
     /**
      * No-args constructor

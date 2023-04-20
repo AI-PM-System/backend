@@ -21,5 +21,13 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
      * @param projectId The project id of the chat.
      * @return Chat
      */
-    List<Chat> findAllByTypeAndProjectId(ChatType type, Long projectId);
+    Chat findByTypeAndProjectId(ChatType type, Long projectId);
+
+    /**
+     * Find a chat by project id.
+     * 
+     * @param projectId The project id of the chat.
+     * @return Chat
+     */
+    List<Chat> findAllByProjectId(Long projectId);
 }

@@ -1,24 +1,35 @@
 package project.mainframe.api.chat.services;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-import project.mainframe.api.base.services.BaseCrudService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import project.mainframe.api.chat.dto.chat.ChatRequest;
 import project.mainframe.api.chat.dto.chat.ChatResponse;
 import project.mainframe.api.chat.dto.message.MessageRequest;
 import project.mainframe.api.chat.dto.message.MessageResponse;
 import project.mainframe.api.chat.entities.Chat;
 import project.mainframe.api.chat.enums.ChatType;
+import project.mainframe.api.chat.repositories.ChatRepository;
 import project.mainframe.api.chat.repositories.MessageRepository;
+import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
+import project.mainframe.api.project.services.UserProjectRestrictionService;
 
 /**
  * Chat service.
  */
 @Service
-public class ChatService extends BaseCrudService<ChatRequest, ChatResponse, Chat, Long>  {
+public class ChatService  {
+
+    /**
+     * The chat repository.
+     */
+    private ChatRepository chatRepository;
 
     /**
      * The project repository.
@@ -31,61 +42,120 @@ public class ChatService extends BaseCrudService<ChatRequest, ChatResponse, Chat
     private MemberRepository memberRepository;
 
     /**
+     * User project restriction service
+     */
+    private UserProjectRestrictionService userProjectRestrictionService;
+
+    /**
      * Constructor.
      * 
-     * @param jpaRepository The repository to use for CRUD operations.
+     * @param chatRepository The repository to use for CRUD operations.
      * @param projectRepository The project repository.
      * @param memberRepository The member repository.
+     * @param userProjectRestrictionService The user project restriction service.
      */
     public ChatService(
-        JpaRepository<Chat, Long> jpaRepository,
+        ChatRepository chatRepository,
         ProjectRepository projectRepository,
-        MemberRepository memberRepository
+        MemberRepository memberRepository,
+        UserProjectRestrictionService userProjectRestrictionService
     ) {
-        super(jpaRepository);
+        this.chatRepository = chatRepository;
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
+        this.userProjectRestrictionService = userProjectRestrictionService;
     }
 
     /**
-     * Maps an entity to a response.
+     * Find all by project id
      * 
-     * @param entity The entity to map.
-     * @return EventResponse The response.
+     * @param projectId The project id.
+     * @param user the user.
+     * @return list of chats.
      */
-    @Override
-    protected ChatResponse mapToResponse(Chat entity) {
-        return new ChatResponse(entity);
+    public List<ChatResponse> findAllByProjectId(Long projectId, User actor) {
+        if (userProjectRestrictionService.isNotMember(projectId, actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        return chatRepository
+            .findAllByProjectId(projectId)
+            .stream()
+            .map(ChatResponse::new)
+            .toList();
     }
 
     /**
-     * Maps a request to an entity.
+     * Find by id.
      * 
-     * @param request The request to map.
-     * @return Event The entity.
+     * @param id The id.
+     * @param user The user.
+     * @return The chat.
      */
-    @Override
-    protected Chat mapToEntity(ChatRequest request) {
+    public ChatResponse findById(Long id, User actor) {
+        Chat chat = chatRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found."));
+
+        if (userProjectRestrictionService.isNotMember(chat.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        return new ChatResponse(chat);
+    }
+
+    /**
+     * Create a new chat.
+     * 
+     * @param chatRequest The chat request.
+     * @param user The user.
+     * @return The chat.
+     */
+    public ChatResponse create(ChatRequest chatRequest, User actor) {
+        if (userProjectRestrictionService.isNotMember(chatRequest.getProjectId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
         Chat chat = new Chat();
-        chat.setName(request.getName());
-        chat.setProject(getAssociatedEntity(projectRepository, request.getProjectId()));
-        chat.setMembers(getAssociatedEntities(memberRepository, request.getMemberIds()));
+        chat.setName(chatRequest.getName());
+        chat.setProject(projectRepository.findById(chatRequest.getProjectId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found.")));
+        chat.setType(ChatType.valueOf(chatRequest.getType()));
 
-        return chat;
+        return new ChatResponse(chatRepository.save(chat));
     }
 
     /**
-     * Create a new chat by type and name.
+     * Update a chat.
      * 
-     * @param type The type of chat.
-     * @param name The name of the chat.
-     * @return ChatResponse The response.
+     * @param id The id.
+     * @param chatRequest The chat request.
+     * @param user The user.
+     * @return The chat.
      */
-    public ChatResponse create(ChatType type, String name) {
-        Chat chat = new Chat();
-        chat.setName(name);
-        chat.setType(type);
+    public ChatResponse update(Long id, ChatRequest chatRequest, User actor) {
+        Chat chat = chatRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found."));
 
-        return mapToResponse(jpaRepository.save(chat));
+        if (userProjectRestrictionService.isNotMember(chat.getProject().getId(), actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        chat.setName(chatRequest.getName());
+        chat.setType(ChatType.valueOf(chatRequest.getType()));
+
+        return new ChatResponse(chatRepository.save(chat));
+    }
+
+    /**
+     * Find by type.
+     * 
+     * @param projectId The project id.
+     * @param type The type.
+     * @param user The user.
+     * @return The chat.
+     */
+    public ChatResponse findByTypeAndProjectId(Long projectId, String type, User actor) {
+        if (userProjectRestrictionService.isNotMember(projectId, actor.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Actor is not a member of the project.");
+        }
+
+        return new ChatResponse(chatRepository.findByTypeAndProjectId(ChatType.valueOf(type), projectId));
     }
 }

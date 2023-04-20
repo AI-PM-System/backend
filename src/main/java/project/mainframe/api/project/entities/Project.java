@@ -69,12 +69,6 @@ public class Project {
      */
     @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     private List<Chat> chats;
-    
-    /**
-     * Has many artifacts
-     */
-    @OneToMany(mappedBy = "project")
-    private List<Artifact> artifacts;
 
     /**
      * No-args constructor

@@ -1,54 +1,101 @@
 package project.mainframe.api.project.services;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Service;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import project.mainframe.api.base.services.BaseCrudService;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import project.mainframe.api.project.dto.user.UserRequest;
 import project.mainframe.api.project.dto.user.UserResponse;
 import project.mainframe.api.project.entities.User;
+import project.mainframe.api.project.repositories.UserRepository;
+import project.mainframe.api.security.dto.AuthenticationResponse;
+import project.mainframe.api.security.utils.JwtUtils;
 
 /**
  * User service.
  */
 @Service
-public class UserService extends BaseCrudService<UserRequest, UserResponse, User, String> {
+public class UserService {
+
+    /**
+     * The user repository
+     */
+    private UserRepository userRepository;
+
+    /**
+     * JwtUtils
+     */
+    private JwtUtils jwtUtils;
     
     /**
      * Constructor.
      * 
-     * @param jpaRepository The repository to use for CRUD operations.
+     * @param userRepository The repository to use for CRUD operations.
+     * @param jwtUtils The jwt utils.
      */
-    public UserService(JpaRepository<User, String> jpaRepository) {
-        super(jpaRepository);
+    public UserService(UserRepository userRepository, JwtUtils jwtUtils) {
+        this.userRepository = userRepository;
+        this.jwtUtils = jwtUtils;
     }
 
     /**
-     * Maps an entity to a response.
+     * Find user by id.
      * 
-     * @param entity The entity to map.
-     * @return EventResponse response
+     * @param id The id.
+     * @return The user.
      */
-    @Override
-    protected UserResponse mapToResponse(User entity) {
-        return new UserResponse(entity);
+    public UserResponse findById(String username) {
+        User user = userRepository.findById(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return new UserResponse(user);
     }
 
     /**
-     * Maps a request to an entity.
+     * Create user with request and role.
      * 
-     * @param request The request to map.
-     * @return Event entity
+     * @param request The request.
+     * @param role The role.
+     * @return The user.
      */
-    @Override
-    protected User mapToEntity(UserRequest request) {
+    public AuthenticationResponse create(UserRequest request, String role) {
         User user = new User();
         user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPhoneNumber(request.getPhoneNumber());
+        user.setAuthorities(Collections.singletonList(role));
+        user.setEnabled(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user = userRepository.save(user);
 
-        return user;
+        // Automatically login after registration
+        List<String> roles = user.getAuthorities().stream().map(r -> r.getAuthority()).collect(Collectors.toList());
+        String jwt = jwtUtils.generateJwtToken(user.getUsername(), roles);
+        return new AuthenticationResponse(jwt);
+    }
+
+    /**
+     * Update user.
+     * 
+     * @param id The id.
+     * @param request The request.
+     * @return The user.
+     */
+    public UserResponse update(UserRequest request, String username) {
+        User user = userRepository.findById(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
+        userRepository.save(user);
+        return new UserResponse(user);
     }
 }

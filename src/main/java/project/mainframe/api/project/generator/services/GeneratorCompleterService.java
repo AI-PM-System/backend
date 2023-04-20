@@ -18,6 +18,7 @@ import project.mainframe.api.project.entities.Role;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.generator.dto.gpt.GPTResponse;
 import project.mainframe.api.project.generator.entities.Generator;
+import project.mainframe.api.project.generator.repositories.GeneratorRepository;
 import project.mainframe.api.project.repositories.EventRepository;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
@@ -52,6 +53,11 @@ public class GeneratorCompleterService {
     private ChatRepository chatRepository;
 
     /**
+     * The generator repository
+     */
+    private GeneratorRepository generatorRepository;
+
+    /**
      * Constructor
      * 
      * @param projectRepository the project repository
@@ -59,19 +65,22 @@ public class GeneratorCompleterService {
      * @param memberRepository the member repository
      * @param eventRepository the event repository
      * @param chatRepository the chat repository
+     * @param generatorRepository the generator repository
      */
     public GeneratorCompleterService(
         ProjectRepository projectRepository,
         RoleRepository roleRepository,
         MemberRepository memberRepository,
         EventRepository eventRepository,
-        ChatRepository chatRepository
+        ChatRepository chatRepository,
+        GeneratorRepository generatorRepository
     ) {
         this.projectRepository = projectRepository;
         this.roleRepository = roleRepository;
         this.memberRepository = memberRepository;
         this.eventRepository = eventRepository;
         this.chatRepository = chatRepository;
+        this.generatorRepository = generatorRepository;
     }
 
     /**
@@ -81,7 +90,7 @@ public class GeneratorCompleterService {
      * @param GTPResponse the GTP response
      * @return void
      */
-    public void complete(Generator generator, GPTResponse GTPResponse, User user) {
+    public Long complete(Generator generator, GPTResponse GTPResponse, User user) {
         // Save project
         Project project = new Project();
         project.setName(GTPResponse.getProject().get("name"));
@@ -147,5 +156,11 @@ public class GeneratorCompleterService {
         project.setRoles(roles);
         project.setChats(Collections.singletonList(chat));
         project = projectRepository.save(project); */
+
+        // Complete generator
+        generator.setCompleted(true);
+        generatorRepository.save(generator);
+
+        return chat.getId();
     }
 }

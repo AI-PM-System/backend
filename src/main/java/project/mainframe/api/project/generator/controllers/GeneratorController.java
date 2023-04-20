@@ -2,19 +2,18 @@ package project.mainframe.api.project.generator.controllers;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.jsonwebtoken.Claims;
+import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.generator.dto.generator.*;
-import project.mainframe.api.project.generator.dto.message.*;
+import project.mainframe.api.project.generator.dto.message.MessageRequest;
 import project.mainframe.api.project.generator.services.GeneratorService;
-import project.mainframe.api.project.services.UserIdentityService;
-import project.mainframe.api.security.utils.JwtUtils;
 
 /**
  * The Generator controller.
@@ -30,29 +29,22 @@ public class GeneratorController {
     private final GeneratorService generatorService;
 
     /**
-     * The User identity service
-     */
-    private final UserIdentityService userIdentityService;
-
-    /**
      * Constructor.
      * @param generatorService The generator service.
-     * @param userIdentityService The user identity service.
      */
-    public GeneratorController(GeneratorService generatorService, UserIdentityService userIdentityService) {
+    public GeneratorController(GeneratorService generatorService) {
         this.generatorService = generatorService;
-        this.userIdentityService = userIdentityService;
     }
     
     /**
      * Creates a new chat generator.
      * 
      * @param request The generator request.
+     * @param authorization The authorized user.
      * @return Generator response.
      */
     @PostMapping("/new")
-    public GeneratorResponse generate(@RequestBody GeneratorRequest request, @RequestHeader("Authorization") String authorization) {
-        User user = this.userIdentityService.getAuthenticatableIdentity(authorization);
+    public GeneratorResponse generate(@RequestBody GeneratorRequest request, @Authorization User user) {
         return this.generatorService.generate(request, user);
     }
 
@@ -61,11 +53,34 @@ public class GeneratorController {
      * Note: send #complete to finish the generation.
      * 
      * @param request The generator request.
+     * @param authorization The authorized user.
      * @return Generator response.
      */
     @PostMapping("/proceed")
-    public List<MessageResponse> proceed(@RequestBody MessageRequest request, @RequestHeader("Authorization") String authorization) {
-        User user = this.userIdentityService.getAuthenticatableIdentity(authorization);
+    public GeneratorResponse proceed(@RequestBody MessageRequest request, @Authorization User user) {
         return this.generatorService.proceed(request, user);
+    }
+
+    /**
+     * force complete a generator.
+     * 
+     * @param authorization The authorized user.
+     * @param generatorId The generator id.
+     * @return Generator response.
+     */
+    @PostMapping("/force-complete/{generatorId}")
+    public GeneratorResponse cancel(@Authorization User user, @PathVariable Long generatorId) {
+        return this.generatorService.forceComplete(generatorId, user);
+    }
+
+    /**
+     * Get any generator that is not completed.
+     * 
+     * @param authorization The authorized header.
+     * @return The generator response.
+     */
+    @GetMapping("/incomplete")
+    public GeneratorResponse getIncompleteGenerator(@Authorization User user) {
+        return this.generatorService.getIncompleteGenerator(user);
     }
 }

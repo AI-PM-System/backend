@@ -32,7 +32,7 @@ public class GeneratorGPTService {
     /**
      * Completion prompt.
      */
-    private static final String COMPLETION_PROMPT = "Act as a project manager planning a project based on the following message: >%s<, answer everything in JSON formatted exact like the following (Make the JSON minified) (Max 4 events) (Max 512 tokens answer): {\"project\":{\"name\":\"\",\"description\":\"\"},\"roles\":[{\"name\":\"\",\"description\":\"\"}],\"members\":[{\"roleId\":0,\"isAI\":false}],\"events\":[{\"name\":\"\",\"startDateTime\":{\"year\":0,\"month\":0,\"day\":0,\"hour\":0,\"minute\":0},\"endDateTime\":{\"year\":0,\"month\":0,\"day\":0,\"hour\":0,\"minute\":0},\"location\":\"\",\"agenda\":\"\"}]}";
+    private static final String COMPLETION_PROMPT = "Act as a project manager planning a project based on the following message: >%s<; Use max 512 tokens to answer. Answer everything in minified JSON formatted exact like the following: {\"project\":{\"name\":\"\",\"description\":\"\"},\"roles\":[{\"name\":\"\",\"description\":\"\"}],\"members\":[{\"roleId\":0,\"isAI\":false}],\"events\":[{\"name\":\"\",\"startDateTime\":{\"year\":0,\"month\":0,\"day\":0,\"hour\":0,\"minute\":0},\"endDateTime\":{\"year\":0,\"month\":0,\"day\":0,\"hour\":0,\"minute\":0},\"location\":\"\",\"agenda\":\"\"}]}";
     
     /**
      * Help prompt.
@@ -48,7 +48,7 @@ public class GeneratorGPTService {
      * The object mapper.
      */
     private ObjectMapper objectMapper = new ObjectMapper();
-
+ 
     /**
      * Constructor.
      * 
@@ -67,9 +67,10 @@ public class GeneratorGPTService {
      */
     public CompletionResponse getHelpMessage(String message) {
         String prompt = String.format(HELP_PROMPT, message);
-        //return getCompletionResponse(prompt, 50); comment out real call, to test
+        //return getCompletionResponse(prompt, 50); 
 
         // Fake response
+
         return CompletionResponse.builder()
             .choices(List.of(ChoiceResponse.builder()
                 .text("You can ask me questions like: What is a sprint? What is a project? What is a role? What is a member? What is a event? What is a project manager? What is a project planner? What is a")
@@ -97,7 +98,7 @@ public class GeneratorGPTService {
         
         try {
             CompletionResponse response = getCompletionResponse(prompt, 512);
-            // Get JSON string
+            // Fake JSON string
             //String json = "{\"project\":{\"name\":\"Website Development\",\"description\":\"Building a website for a business with a deadline at the end of the month\"},\"roles\":[{\"name\":\"Project Manager\",\"description\":\"Responsible for managing the project\"},{\"name\":\"Designer\",\"description\":\"Responsible for designing the website\"},{\"name\":\"Developer\",\"description\":\"Responsible for developing the website\"}],\"members\":[{\"roleId\":0,\"isAI\":false},{\"roleId\":1,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false}],\"events\":[{\"name\":\"Scrum Planning\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":1,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":1,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Discuss the project plan and assign tasks to members\"},{\"name\":\"Design Review\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":3,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":3,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Review the design and make necessary changes\"},{\"name\":\"Development Review\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":10,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":10,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Review the development progress and make necessary changes\"},{\"name\":\"Project Review\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Review the project and make sure it meets the requirements\"}]}";
             String json = response.getChoices().get(0).getText();
             // Parse JSON from response using the object mapper
@@ -125,6 +126,11 @@ public class GeneratorGPTService {
         StringBuilder builder = new StringBuilder();
 
         for (GeneratorMessage message : messages) {
+            // Skip messages with no user
+            if (message.getUser() == null) {
+                continue;
+            }
+
             builder.append(message.getContent());
             builder.append(System.lineSeparator());
         }
@@ -146,7 +152,7 @@ public class GeneratorGPTService {
                 .prompt(message)
                 .model("text-davinci-003")
                 .maxTokens(maxTokens)
-                .temperature(0.9)
+                .temperature(0.7)
                 .topP(1.0)
                 .frequencyPenalty(0.0)
                 .presencePenalty(0.0)

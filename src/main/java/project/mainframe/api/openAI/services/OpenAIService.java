@@ -79,6 +79,11 @@ public class OpenAIService {
 
         Map<String, Object> body = toMap(request);
         String json = toJson(body);
+
+        System.out.println("== Completion Request ==");
+        System.out.println(json);
+        System.out.println("=========================");
+
         URI uri = URI.create(API_BASE_URL + "completions");
 
         CompletionResponse response = CLIENT.post()
@@ -89,7 +94,13 @@ public class OpenAIService {
             .body(BodyInserters.fromValue(json))
             .retrieve()
             .bodyToMono(CompletionResponse.class)
+            .log()
             .block();
+
+        // Log response
+        System.out.println("== Completion Response ==");
+        System.out.println(response.getChoices().get(0).getText());
+        System.out.println("=========================");
 
         // Cache the response
         openAICacheService.cacheCompletion(response);

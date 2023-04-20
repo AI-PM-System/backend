@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import project.mainframe.api.openAI.dto.completions.CompletionRequest;
 import project.mainframe.api.openAI.dto.completions.CompletionResponse;
@@ -80,7 +82,9 @@ public class GeneratorService {
      */
     public GeneratorResponse generate(GeneratorRequest request, User user) {
         // Create initial entities.
-        Generator generator = generatorRepository.save(new Generator());
+        Generator generator = new Generator();
+        generator.setUser(user);
+        generator = generatorRepository.save(generator);
         
         // Create user message.
         GeneratorMessage message = generatorMessageRepository.save(new GeneratorMessage(
@@ -99,13 +103,23 @@ public class GeneratorService {
             null
         ));
 
+        
         // Create messages list.
-        List<MessageResponse> messages = new ArrayList<>();
-        messages.add(new MessageResponse(message, null));
-        messages.add(new MessageResponse(openAIMessage, null));
+        List<GeneratorMessage> generatorMessages = new ArrayList<>();
+        generatorMessages.add(message);
+        generatorMessages.add(openAIMessage);
+
+        // add messages to generator
+        generator.setMessages(generatorMessages);
+        generatorRepository.save(generator);
+
+        // Create messages list.
+        List<MessageResponse> messageResponses = new ArrayList<>();
+        //messageResponses.add(new MessageResponse(message, null));
+        messageResponses.add(new MessageResponse(openAIMessage, null));
         
         // Return the response.
-        return new GeneratorResponse(generator.getId(), messages);
+        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), 0L);
     }
 
     /**
@@ -114,35 +128,112 @@ public class GeneratorService {
      * @param request The generator request.
      * @return Generator response.
      */
-    public List<MessageResponse> proceed(MessageRequest request, User user) {
+    public GeneratorResponse proceed(MessageRequest request, User user) {
         GeneratorMessage message = generatorMessageRepository.save(new GeneratorMessage(
             request.getContent(),
             generatorRepository.findById(request.getGeneratorId()).get(),
             user
         ));
 
+        Generator generator = generatorRepository.findById(request.getGeneratorId()).get();
+        if (generator.isCompleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Generator is already completed.");
+        }
+
+        if (generator.getUser().getUsername() != user.getUsername()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the generator.");
+        }
+
         GPTResponse gptResponse = null;
         GeneratorMessage completionMessage = null;
+        long mainChatId = 0L;
         if (isComplete(request.getContent())) {
-            Generator generator = generatorRepository.findById(request.getGeneratorId()).get();
             List<GeneratorMessage> messages = generator.getMessages();
             gptResponse = generatorGPTService.getProjectJSON(messages);
-            generatorCompleterService.complete(generator, gptResponse, user);
+            mainChatId = generatorCompleterService.complete(generator, gptResponse, user);
 
             completionMessage = generatorMessageRepository.save(new GeneratorMessage(
                 "Project completed!",
                 generator,
                 null
             ));
+        } else {
+            // Create help message
+            CompletionResponse _completionResponse = generatorGPTService.getHelpMessage(message.getContent());
+            completionMessage = generatorMessageRepository.save(new GeneratorMessage(
+                _completionResponse.getChoices().get(0).getText(),
+                generator,
+                null
+            ));
+        }
+
+        // Create messages list.
+        List<GeneratorMessage> generatorMessages = generator.getMessages();
+        generatorMessages.add(message);
+        generatorMessages.add(completionMessage);
+
+        // update generator messages
+        generator.setMessages(generatorMessages);
+        generatorRepository.save(generator);
+
+        List<MessageResponse> messageResponses = new ArrayList<>();
+        //messageResponses.add(new MessageResponse(message, gptResponse));
+        messageResponses.add(new MessageResponse(completionMessage, gptResponse));
+
+        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), mainChatId);
+    }
+
+    /**
+     * Get any incomplete generator.
+     * 
+     * @param user The user.
+     * @return Generator response.
+     */
+    public GeneratorResponse getIncompleteGenerator(User user) {
+        Generator generator = generatorRepository.findFirstByUserAndCompletedFalse(user);
+        if (generator == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No incomplete generator found!");
         }
 
         List<MessageResponse> messages = new ArrayList<>();
-        messages.add(new MessageResponse(message, gptResponse));
-        if (completionMessage != null) {
-            messages.add(new MessageResponse(completionMessage, null));
+        for (GeneratorMessage message : generator.getMessages()) {
+            messages.add(new MessageResponse(message, null));
         }
 
-        return messages;
+        return new GeneratorResponse(generator.getId(), messages, generator.isCompleted(), 0L);
+    }
+
+    /**
+     * Force complete a generator.
+     * 
+     * @param authorization The authorized user.
+     * @param generatorId The generator id.
+     * @return Generator response.
+     */
+    public GeneratorResponse forceComplete(Long generatorId, User user) {
+        Generator generator = generatorRepository.findById(generatorId).get();
+        if (generator == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Generator not found!");
+        }
+
+        if (generator.getUser().getUsername() != user.getUsername()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the generator.");
+        }
+
+        generator.setCompleted(true);
+        generatorRepository.save(generator);
+
+        List<MessageResponse> messageResponses = new ArrayList<>();
+        messageResponses.add(new MessageResponse(
+            generatorMessageRepository.save(new GeneratorMessage(
+                "Generator cancelled!",
+                generator,
+                null
+            )),
+            null
+        ));
+
+        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), 0L);
     }
 
     /**

@@ -26,6 +26,16 @@ public class GeneratorResponse {
     private List<MessageResponse> messages;
 
     /**
+     * Is the generator completed?
+     */
+    private boolean completed;
+
+    /**
+     * The generator's main chat id
+     */
+    private Long mainChatId;
+
+    /**
      * No-args constructor.
      */
     public GeneratorResponse() {}

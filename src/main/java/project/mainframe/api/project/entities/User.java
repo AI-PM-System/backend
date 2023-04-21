@@ -51,6 +51,11 @@ public class User extends Authenticatable {
     private String phoneNumber;
 
     /**
+     * chatGPT credits
+     */
+    private int credits;
+
+    /**
      * No-args constructor
      */
     public User() {}

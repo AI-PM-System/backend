@@ -16,6 +16,16 @@ public class GeneratorRequest {
      * The first message in the generation process.
      */
     private String content;
+
+    /**
+     * The generator's actor id.
+     */
+    private Long actorId;
+
+    /**
+     * The generator's tone id.
+     */
+    private Long toneId;
     
     /**
      * No-args constructor

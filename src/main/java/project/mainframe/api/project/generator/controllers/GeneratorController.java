@@ -62,15 +62,27 @@ public class GeneratorController {
     }
 
     /**
-     * force complete a generator.
+     * cancel a generator.
      * 
      * @param authorization The authorized user.
      * @param generatorId The generator id.
      * @return Generator response.
      */
-    @PostMapping("/force-complete/{generatorId}")
+    @PostMapping("/cancel/{generatorId}")
     public GeneratorResponse cancel(@Authorization User user, @PathVariable Long generatorId) {
-        return this.generatorService.forceComplete(generatorId, user);
+        return this.generatorService.cancel(generatorId, user);
+    }
+
+    /**
+     * Complete a generator.
+     * 
+     * @param authorization The authorized user.
+     * @param generatorId The generator id.
+     * @return Generator response.
+     */
+    @PostMapping("/complete/{generatorId}")
+    public GeneratorResponse complete(@Authorization User user, @PathVariable Long generatorId) {
+        return this.generatorService.complete(generatorId, user);
     }
 
     /**

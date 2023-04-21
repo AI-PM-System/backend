@@ -21,21 +21,20 @@ import project.mainframe.api.project.generator.dto.generator.*;
 import project.mainframe.api.project.generator.dto.gpt.GPTResponse;
 import project.mainframe.api.project.generator.dto.message.*;
 import project.mainframe.api.project.generator.entities.Generator;
+import project.mainframe.api.project.generator.entities.GeneratorActor;
 import project.mainframe.api.project.generator.entities.GeneratorMessage;
+import project.mainframe.api.project.generator.entities.GeneratorTone;
+import project.mainframe.api.project.generator.repositories.GeneratorActorRepository;
 import project.mainframe.api.project.generator.repositories.GeneratorMessageRepository;
 import project.mainframe.api.project.generator.repositories.GeneratorRepository;
-import project.mainframe.api.project.generator.utils.GeneratorSanitizer;
+import project.mainframe.api.project.generator.repositories.GeneratorToneRepository;
+import project.mainframe.api.project.generator.utils.GeneratorGPTSanitizer;
 
 /**
  * Generator service.
  */
 @Service
 public class GeneratorService {
-
-    /**
-     * Complete command.
-     */
-    private static final String COMPLETE_COMMAND = "#complete";
 
     /**
      * Generator repository.
@@ -55,27 +54,42 @@ public class GeneratorService {
     /**
      * The generator completer service.
      */
-    private GeneratorCompleterService generatorCompleterService;
+    private GeneratorCreatorService generatorCreatorService;
+
+    /**
+     * The generator actor repository.
+     */
+    private GeneratorActorRepository generatorActorRepository;
+
+    /**
+     * The generator tone repository.
+     */
+    private GeneratorToneRepository generatorToneRepository;
 
     /**
      * Constructor.
      *
      * @param generatorRepository The generator repository.
      * @param messageRepository The message repository.
-     * @param openAIService The OpenAI service.
-     * @param generatorCompleterService The generator completer service.
+     * @param generatorCreatorService The generator creator service.
      * @param generatorGPTService The generator gpt service.
+     * @param generatorActorRepository The generator actor repository.
+     * @param generatorToneRepository The generator tone repository.
      */
     public GeneratorService(
         GeneratorRepository generatorRepository,
         GeneratorMessageRepository generatorMessageRepository,
         GeneratorGPTService generatorGPTService,
-        GeneratorCompleterService generatorCompleterService
+        GeneratorCreatorService generatorCreatorService,
+        GeneratorActorRepository generatorActorRepository,
+        GeneratorToneRepository generatorToneRepository
     ) {
         this.generatorRepository = generatorRepository;
         this.generatorMessageRepository = generatorMessageRepository;
         this.generatorGPTService = generatorGPTService;
-        this.generatorCompleterService = generatorCompleterService;
+        this.generatorCreatorService = generatorCreatorService;
+        this.generatorActorRepository = generatorActorRepository;
+        this.generatorToneRepository = generatorToneRepository;
     }
 
     /**
@@ -85,45 +99,33 @@ public class GeneratorService {
      * @return Generator response.
      */
     public GeneratorResponse generate(GeneratorRequest request, User user) {
-        // Create initial entities.
-        Generator generator = new Generator();
-        generator.setUser(user);
-        generator = generatorRepository.save(generator);
-        
-        // Create user message.
-        GeneratorMessage message = generatorMessageRepository.save(new GeneratorMessage(
-            request.getContent(),
-            generator,
-            user
-        ));
+        if (user.getCredits() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no credits.");
+        }
 
-        // Create OpenAI completion request.
-        CompletionResponse completionResponse = generatorGPTService.getHelpMessage(message.getContent());
+        GeneratorActor actor = generatorActorRepository.findById(request.getActorId()).get();
+        if (actor == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Actor not found.");
+        }
 
-        // Create OpenAI message.
-        GeneratorMessage openAIMessage = generatorMessageRepository.save(new GeneratorMessage(
-            completionResponse.getChoices().get(0).getText(),
-            generator,
-            null
-        ));
+        GeneratorTone tone = generatorToneRepository.findById(request.getToneId()).get();
+        if (tone == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tone not found.");
+        }
 
-        
-        // Create messages list.
+        Generator generator = generatorRepository.save(new Generator(user, actor, tone));
+
         List<GeneratorMessage> generatorMessages = new ArrayList<>();
-        generatorMessages.add(message);
-        generatorMessages.add(openAIMessage);
-
-        // add messages to generator
-        generator.setMessages(generatorMessages);
-        generatorRepository.save(generator);
-
-        // Create messages list.
-        List<MessageResponse> messageResponses = new ArrayList<>();
-        //messageResponses.add(new MessageResponse(message, null));
-        messageResponses.add(new MessageResponse(openAIMessage, null));
+        generatorMessages.add(saveUserMessage(request.getContent(), user, generator));
+        generatorMessages.add(saveHelpMessage(request.getContent(), user, generator));
         
-        // Return the response.
-        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), 0L);
+        updateGeneratorMessages(generator, generatorMessages);
+
+        return new GeneratorResponse(
+            generator.getId(), 
+            Collections.singletonList(new MessageResponse(generatorMessages.get(1), null)),
+            generator.isCompleted(), 
+            0L);
     }
 
     /**
@@ -133,11 +135,9 @@ public class GeneratorService {
      * @return Generator response.
      */
     public GeneratorResponse proceed(MessageRequest request, User user) {
-        GeneratorMessage message = generatorMessageRepository.save(new GeneratorMessage(
-            request.getContent(),
-            generatorRepository.findById(request.getGeneratorId()).get(),
-            user
-        ));
+        if (user.getCredits() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no credits.");
+        }
 
         Generator generator = generatorRepository.findById(request.getGeneratorId()).get();
         if (generator.isCompleted()) {
@@ -148,44 +148,60 @@ public class GeneratorService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the generator.");
         }
 
-        GPTResponse gptResponse = null;
-        GeneratorMessage completionMessage = null;
-        Chat mainChat = null;
-        if (isComplete(request.getContent())) {
-            List<GeneratorMessage> messages = generator.getMessages();
-            gptResponse = generatorGPTService.getProjectJSON(messages);
-            mainChat = generatorCompleterService.complete(generator, gptResponse, user);
+        List<GeneratorMessage> generatorMessages = new ArrayList<>();
+        generatorMessages.add(saveUserMessage(request.getContent(), user, generator));
+        generatorMessages.add(saveHelpMessage(request.getContent(), user, generator));
 
-            completionMessage = generatorMessageRepository.save(new GeneratorMessage(
-                "Project completed!",
-                generator,
-                null
-            ));            
-        } else {
-            // Create help message
-            CompletionResponse _completionResponse = generatorGPTService.getHelpMessage(message.getContent());
-            completionMessage = generatorMessageRepository.save(new GeneratorMessage(
-                _completionResponse.getChoices().get(0).getText(),
-                generator,
-                null
-            ));
+        updateGeneratorMessages(generator, generatorMessages);
+
+        return new GeneratorResponse(
+            generator.getId(), 
+            Collections.singletonList(new MessageResponse(generatorMessages.get(1), null)),
+            generator.isCompleted(), 
+            0L);
+    }
+
+    /**
+     * Complete a generator.
+     * 
+     * @param id The generator id.
+     * @param user The user.
+     * @return Generator response.
+     */
+    public GeneratorResponse complete(Long id, User user) {
+        if (user.getCredits() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no credits.");
         }
 
-        // Create messages list.
-        List<GeneratorMessage> generatorMessages = generator.getMessages();
-        generatorMessages.add(message);
-        generatorMessages.add(completionMessage);
+        Generator generator = generatorRepository.findById(id).get();
+        if (generator.isCompleted()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Generator is already completed.");
+        }
 
-        // update generator messages
-        generator.setMessages(generatorMessages);
-        generatorRepository.save(generator);
+        if (generator.getUser().getUsername() != user.getUsername()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the generator.");
+        }
 
-        List<MessageResponse> messageResponses = new ArrayList<>();
-        //messageResponses.add(new MessageResponse(message, gptResponse));
-        messageResponses.add(new MessageResponse(completionMessage, gptResponse));
+        // Get GPT response based on the generator's messages.
+        String singularizedMessage = toSingularMessage(generator.getMessages());
+        GPTResponse gptResponse = generatorGPTService.getProjectJSON(singularizedMessage, 
+            generator.getActor().getName(), generator.getTone().getTone());
+        // Complete the generator.
+        Chat mainChat = generatorCreatorService.complete(generator, gptResponse, singularizedMessage, user);
 
-        long chatId = mainChat != null ? mainChat.getId() : 0L;
-        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), chatId);
+        GeneratorMessage completionMessage = generatorMessageRepository.save(new GeneratorMessage(
+            "Project completed!",
+            generator,
+            null
+        ));
+
+        updateGeneratorMessages(generator, Collections.singletonList(completionMessage));
+
+        return new GeneratorResponse(
+            generator.getId(), 
+            Collections.singletonList(new MessageResponse(completionMessage, null)),
+            generator.isCompleted(), 
+            mainChat.getId());
     }
 
     /**
@@ -205,17 +221,25 @@ public class GeneratorService {
             messages.add(new MessageResponse(message, null));
         }
 
-        return new GeneratorResponse(generator.getId(), messages, generator.isCompleted(), 0L);
+        return new GeneratorResponse(
+            generator.getId(), 
+            messages, 
+            generator.isCompleted(), 
+            0L);
     }
 
     /**
-     * Force complete a generator.
+     * Cancel a generator.
      * 
      * @param authorization The authorized user.
      * @param generatorId The generator id.
      * @return Generator response.
      */
-    public GeneratorResponse forceComplete(Long generatorId, User user) {
+    public GeneratorResponse cancel(Long generatorId, User user) {
+        if (user.getCredits() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has no credits.");
+        }
+
         Generator generator = generatorRepository.findById(generatorId).get();
         if (generator == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Generator not found!");
@@ -228,29 +252,92 @@ public class GeneratorService {
         generator.setCompleted(true);
         generatorRepository.save(generator);
 
-        List<MessageResponse> messageResponses = new ArrayList<>();
-        messageResponses.add(new MessageResponse(
-            generatorMessageRepository.save(new GeneratorMessage(
-                "Generator cancelled!",
-                generator,
-                null
-            )),
+        GeneratorMessage completionMessage = generatorMessageRepository.save(new GeneratorMessage(
+            "Project cancelled!",
+            generator,
             null
         ));
 
-        return new GeneratorResponse(generator.getId(), messageResponses, generator.isCompleted(), 0L);
+        updateGeneratorMessages(generator, Collections.singletonList(completionMessage));
+
+        return new GeneratorResponse(
+            generator.getId(), 
+            Collections.singletonList(new MessageResponse(completionMessage, null)),
+            generator.isCompleted(), 
+            0L);
     }
 
     /**
-     * Check if a generator is complete by
-     * checking if the last message is the complete command.
+     * Save user message
      * 
-     * @param request The generator request.
-     * @return boolean True if complete, false otherwise.
+     * @param request The message request.
+     * @param user The user.
+     * @param generator The generator.
+     * @return Generator message.
      */
-    public boolean isComplete(String messageContent) {
-        return GeneratorSanitizer
-            .sanitize(messageContent)
-            .equals(COMPLETE_COMMAND);
+    private GeneratorMessage saveUserMessage(String content, User user, Generator generator) {
+        return generatorMessageRepository.save(new GeneratorMessage(
+            content,
+            generator,
+            user
+        ));
+    }
+
+    /**
+     * Save Help message
+     * 
+     * @param request The message request.
+     * @param user The user.
+     * @param generator The generator.
+     * @return Generator message.
+     */
+    private GeneratorMessage saveHelpMessage(String content, User user, Generator generator) {
+        CompletionResponse completionResponse = generatorGPTService.getHelpMessage(content, 
+            generator.getActor().getName(), generator.getTone().getTone());
+        return generatorMessageRepository.save(new GeneratorMessage(
+            completionResponse.getChoices().get(0).getText(),
+            generator,
+            null
+        ));
+    }
+
+    /**
+     * Update generator messages
+     * 
+     * @param generator The generator.
+     * @param message The message.
+     * @param helpMessage The help message.
+     */
+    private void updateGeneratorMessages(Generator generator, List<GeneratorMessage> messages) {
+        List<GeneratorMessage> generatorMessages = generator.getMessages();
+        if (generatorMessages == null) {
+            generatorMessages = new ArrayList<>();
+        }
+
+        generatorMessages.addAll(messages);
+        generator.setMessages(generatorMessages);
+        generatorRepository.save(generator);
+    }
+
+    /**
+     * Transform the generator messages into a complete string
+     * 
+     * @param messages The generator messages.
+     * @return The complete string.
+     */
+    private static String toSingularMessage(List<GeneratorMessage> messages) {
+        StringBuilder builder = new StringBuilder();
+
+        for (GeneratorMessage message : messages) {
+            // Skip messages with no user
+            if (message.getUser() == null) {
+                continue;
+            }
+
+            builder.append(message.getContent());
+            builder.append(System.lineSeparator());
+        }
+
+        return builder.toString();
     }
 }

@@ -50,7 +50,29 @@ public class Generator {
     private User user;
 
     /**
+     * The generator has one generator tone
+     */
+    @OneToOne
+    private GeneratorTone tone;
+
+    /**
+     * The generator has one generator actor
+     */
+    @OneToOne
+    private GeneratorActor actor;
+
+    /**
      * No-args constructor.
      */
     public Generator() {}
+
+    /**
+     * Constructor.
+     * @param user The user.
+     */
+    public Generator(User user, GeneratorActor actor, GeneratorTone tone) {
+        this.user = user;
+        this.actor = actor;
+        this.tone = tone;
+    }
 }

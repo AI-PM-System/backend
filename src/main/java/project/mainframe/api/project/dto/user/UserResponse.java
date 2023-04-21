@@ -39,6 +39,11 @@ public class UserResponse {
     private String phoneNumber;    
 
     /**
+     * chatGPT credits
+     */
+    private int credits;
+
+    /**
      * Constructs a UserResponse object from a User object.
      * @param user The User object to be converted.
      */
@@ -48,6 +53,7 @@ public class UserResponse {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
+        this.credits = user.getCredits();
     }
 
     /**

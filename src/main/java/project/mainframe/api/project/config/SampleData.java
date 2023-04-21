@@ -169,6 +169,7 @@ public class SampleData implements ApplicationRunner {
         user.setLastName("Doe");
         user.setEmail("user@example.com");
         user.setPhoneNumber("1234567890");
+        user.setCredits(10);
         user = userRepository.save(user);
 
         // Create members

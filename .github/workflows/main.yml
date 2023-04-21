@@ -72,7 +72,7 @@ jobs:
             --build-arg JWT_AUDIENCE=$JWT_AUDIENCE \
             --build-arg JWT_MAX_TOKEN_LENGTH=$JWT_MAX_TOKEN_LENGTH \
             --build-arg OPENAI_API_KEY=$OPENAI_API_KEY \
-            --build-arg OPENAI_MAX_DAILY_REQUESTS=$OPENAI_MAX_DAILY_REQUESTS
+            --build-arg OPENAI_MAX_DAILY_REQUESTS=$OPENAI_MAX_DAILY_REQUESTS \
             .
           docker save ${{ secrets.IMAGE_NAME }} > "${{ secrets.IMAGE_NAME }}.tar"
 

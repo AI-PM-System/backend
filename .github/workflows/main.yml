@@ -101,5 +101,5 @@ jobs:
             docker stop ${{ secrets.IMAGE_NAME }}
             docker rm ${{ secrets.IMAGE_NAME }}
             docker load < "/root/containers/${{ secrets.IMAGE_NAME }}.tar"
-            docker run -d --name ${{ secrets.IMAGE_NAME }} -p 80:80 ${{ secrets.IMAGE_NAME }}
+            docker run -d --name ${{ secrets.IMAGE_NAME }} -p 8080:8080 ${{ secrets.IMAGE_NAME }}
             exit

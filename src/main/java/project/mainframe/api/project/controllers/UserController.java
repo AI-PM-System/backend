@@ -53,7 +53,11 @@ public class UserController {
      */
     @PostMapping("/public/user")
     public AuthenticationResponse create(@RequestBody UserRequest userRequest) {
-        return userService.create(userRequest, "ROLE_USER");
+
+        // Disabled for security reasons.
+        throw new UnsupportedOperationException("This endpoint is disabled for security reasons.");
+
+        //return userService.create(userRequest, "ROLE_USER");
     }
 
     /**

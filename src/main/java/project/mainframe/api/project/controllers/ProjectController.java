@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.dto.project.ProjectRequest;
 import project.mainframe.api.project.dto.project.ProjectResponse;
-import project.mainframe.api.project.entities.Project;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.services.ProjectService;
 

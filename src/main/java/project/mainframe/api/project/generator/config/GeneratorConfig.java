@@ -54,9 +54,7 @@ public class GeneratorConfig implements ApplicationRunner {
         generatorActors.add(new GeneratorActor("Project Manager"));
         generatorActors.add(new GeneratorActor("University Professor"));
         generatorActors.add(new GeneratorActor("Steve Jobs"));
-        generatorActors.add(new GeneratorActor("Einstein"));
-        generatorActors.add(new GeneratorActor("Batman"));
-        generatorActors.add(new GeneratorActor("Spiderman"));
+        generatorActors.add(new GeneratorActor("Einstein"));        
         generatorActors.add(new GeneratorActor("Marketing Director"));
         generatorActors.add(new GeneratorActor("Graphic Designer"));
         generatorActors.add(new GeneratorActor("CEO"));
@@ -107,6 +105,9 @@ public class GeneratorConfig implements ApplicationRunner {
         generatorActors.add(new GeneratorActor("Famous Writer"));
         generatorActors.add(new GeneratorActor("Famous Scientist"));
         generatorActors.add(new GeneratorActor("Evil Villian"));
+        generatorActors.add(new GeneratorActor("Batman"));
+        generatorActors.add(new GeneratorActor("Spiderman"));
+        generatorActors.add(new GeneratorActor("Homer Simpson"));
         generatorActorRepository.saveAll(generatorActors);
     }
 

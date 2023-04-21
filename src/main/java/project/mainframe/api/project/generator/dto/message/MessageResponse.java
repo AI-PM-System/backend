@@ -3,7 +3,6 @@ package project.mainframe.api.project.generator.dto.message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.dto.user.UserResponse;
 import project.mainframe.api.project.generator.dto.gpt.GPTResponse;
 import project.mainframe.api.project.generator.entities.GeneratorMessage;

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.dto.event.EventRequest;
 import project.mainframe.api.project.dto.event.EventResponse;
-import project.mainframe.api.project.entities.Event;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.services.EventService;
 

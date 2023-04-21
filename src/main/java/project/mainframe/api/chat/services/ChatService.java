@@ -2,19 +2,15 @@ package project.mainframe.api.chat.services;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import project.mainframe.api.chat.dto.chat.ChatRequest;
 import project.mainframe.api.chat.dto.chat.ChatResponse;
-import project.mainframe.api.chat.dto.message.MessageRequest;
-import project.mainframe.api.chat.dto.message.MessageResponse;
 import project.mainframe.api.chat.entities.Chat;
 import project.mainframe.api.chat.enums.ChatType;
 import project.mainframe.api.chat.repositories.ChatRepository;
-import project.mainframe.api.chat.repositories.MessageRepository;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;

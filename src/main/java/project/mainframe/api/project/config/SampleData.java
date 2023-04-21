@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
@@ -89,6 +89,20 @@ public class SampleData implements ApplicationRunner {
     private TaskRepository taskRepository;
 
     /**
+     * This is the default username and password that will be created
+     * when the application starts.
+     */
+    @Value("${default.user.name}")
+    private String defaultUserName;
+
+    /**
+     * This is the default username and password that will be created
+     * when the application starts.
+     */
+    @Value("${default.user.password}")
+    private String defaultUserPassword;
+
+    /**
      * Constructor.
      * 
      * @param userRepository      The user repository.
@@ -162,8 +176,8 @@ public class SampleData implements ApplicationRunner {
 
         // Create users
         User user = new User();
-        user.setUsername("user");
-        user.setPassword(passwordEncoder.encode("user"));
+        user.setUsername(defaultUserName);
+        user.setPassword(passwordEncoder.encode(defaultUserPassword));
         user.setAuthorities(Collections.singletonList("ROLE_ADMIN"));
         user.setFirstName("John");
         user.setLastName("Doe");

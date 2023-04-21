@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import project.mainframe.api.chat.dto.message.MessageRequest;
 import project.mainframe.api.chat.dto.message.MessageResponse;
-import project.mainframe.api.chat.entities.Message;
 import project.mainframe.api.chat.services.MessageService;
 import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.entities.User;

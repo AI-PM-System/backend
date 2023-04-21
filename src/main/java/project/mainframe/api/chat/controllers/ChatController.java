@@ -2,7 +2,6 @@ package project.mainframe.api.chat.controllers;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import project.mainframe.api.chat.dto.chat.ChatRequest;
 import project.mainframe.api.chat.dto.chat.ChatResponse;
-import project.mainframe.api.chat.entities.Chat;
 import project.mainframe.api.chat.services.ChatService;
 import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.entities.User;

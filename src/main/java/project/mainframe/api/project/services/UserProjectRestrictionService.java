@@ -3,7 +3,6 @@ package project.mainframe.api.project.services;
 import org.springframework.stereotype.Service;
 
 import project.mainframe.api.project.repositories.MemberRepository;
-import project.mainframe.api.project.repositories.ProjectRepository;
 
 /**
  * User project restriction service.
@@ -17,22 +16,14 @@ public class UserProjectRestrictionService {
     private MemberRepository memberRepository;
 
     /**
-     * The project repository
-     */
-    private ProjectRepository projectRepository;
-
-    /**
      * Constructor.
      * 
      * @param memberRepository The member repository.
-     * @param projectRepository The project repository.
      */
     public UserProjectRestrictionService(
-        MemberRepository memberRepository,
-        ProjectRepository projectRepository
+        MemberRepository memberRepository
     ) {
         this.memberRepository = memberRepository;
-        this.projectRepository = projectRepository;
     }
 
     /**

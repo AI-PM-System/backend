@@ -1,13 +1,9 @@
 package project.mainframe.api.project.generator.utils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-import project.mainframe.api.chat.entities.Chat;
 import project.mainframe.api.project.entities.Event;
 import project.mainframe.api.project.entities.Member;
 import project.mainframe.api.project.entities.Project;

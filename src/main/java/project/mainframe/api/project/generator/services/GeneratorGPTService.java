@@ -1,24 +1,16 @@
 package project.mainframe.api.project.generator.services;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import project.mainframe.api.chat.entities.Message;
-import project.mainframe.api.openAI.dto.completions.ChoiceResponse;
 import project.mainframe.api.openAI.dto.completions.CompletionRequest;
 import project.mainframe.api.openAI.dto.completions.CompletionResponse;
-import project.mainframe.api.openAI.dto.completions.UsageResponse;
 import project.mainframe.api.openAI.exceptions.OpenAIException;
 import project.mainframe.api.openAI.services.OpenAIService;
 import project.mainframe.api.project.generator.dto.gpt.GPTResponse;
-import project.mainframe.api.project.generator.entities.GeneratorMessage;
 import project.mainframe.api.project.generator.utils.GeneratorGPTSanitizer;
 
 /**
@@ -33,13 +25,13 @@ public class GeneratorGPTService {
      * Completion prompt.
      * Send to OpenAI's completion endpoint when the generator is completed.
      */
-    private static final String COMPLETION_PROMPT = "Answer as %s planning a project, who writes in tone %s, use max 650 tokens to answer, do not include leading zeroes, and based on the following message: %s; answer everything in minified JSON formatted exact like the following: {\"project\":{\"name\":\"\",\"description\":\"\"},\"roles\":[{\"name\":\"\",\"description\":\"\"}],\"members\":[{\"roleId\":0,\"isAI\":false}],\"events\":[{\"name\":\"\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"\",\"agenda\":\"\"}],\"boards\":[{\"name\":\"\",\"description\":\"\"}],\"boardLists\":[{\"name\":\"\",\"boardId\":0}],\"tasks\":[{\"name\":\"\",\"description\":\"\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}]}";
+    private static final String COMPLETION_PROMPT = "Answer as %s planning a project, who writes in tone %s, use max 650 tokens to answer, do not include leading zeroes, and based on the following message: %s; Design a project and answer everything in minified JSON formatted exact like the following: {\"project\":{\"name\":\"\",\"description\":\"\"},\"roles\":[{\"name\":\"\",\"description\":\"\"}],\"members\":[{\"roleId\":0,\"isAI\":false}],\"events\":[{\"name\":\"\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"\",\"agenda\":\"\"}],\"boards\":[{\"name\":\"\",\"description\":\"\"}],\"boardLists\":[{\"name\":\"\",\"boardId\":0}],\"tasks\":[{\"name\":\"\",\"description\":\"\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}]}";
     
     /**
      * Help prompt.
      * Send to OpenAI's completion endpoint after each message, except when completing.
      */
-    private static final String HELP_PROMPT = "Answer as %s, use max 50 tokens to answer, and answer the following message in tone %s: %s";
+    private static final String HELP_PROMPT = "Answer as %s, use max 50 tokens to answer, write in tone %s, and suggest missing project elements based on the following message: %s";
 
     /**
      * Welcome message prompt.
@@ -96,9 +88,10 @@ public class GeneratorGPTService {
      */
     public CompletionResponse getWelcomeMessage(String message, String gptActor, String gptTone) {
         String prompt = String.format(WELCOME_MESSAGE_PROMPT, gptActor, gptTone, message);
-        //return getCompletionResponse(prompt, 50);
+        return getCompletionResponse(prompt, 50);
 
         // Fake response
+        /*
         return CompletionResponse.builder()
             .choices(List.of(ChoiceResponse.builder()
                 .text("Welcome to the Mobile App Project! I'm excited to help you plan out this project and make sure it runs smoothly. Let's get started!")
@@ -106,7 +99,7 @@ public class GeneratorGPTService {
             .usage(UsageResponse.builder()
                 .prompt_tokens(20)
                 .build())
-            .build();
+            .build(); */
     }
     
     /**
@@ -123,11 +116,12 @@ public class GeneratorGPTService {
         String prompt = String.format(COMPLETION_PROMPT, gptActor, gptTone, message);
         
         try {
-            //CompletionResponse response = getCompletionResponse(prompt, 712);
             // Fake JSON string
-            // String _json = "{\"boards\":[{\"name\":\"Main board\",\"description\":\"main board description\"}],\"tasks\":[{\"name\":\"test 1\",\"description\":\"test 2\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}],\"boardLists\":[{\"name\":\"to-do\",\"boardId\":0}],\"project\":{\"name\":\"Website Development\",\"description\":\"Building a website for a business with a deadline at the end of the month\"},\"roles\":[{\"name\":\"Project Manager\",\"description\":\"Responsible for managing the project\"},{\"name\":\"Designer\",\"description\":\"Responsible for designing the website\"},{\"name\":\"Developer\",\"description\":\"Responsible for developing the website\"}],\"members\":[{\"roleId\":0,\"isAI\":false},{\"roleId\":1,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false}],\"events\":[{\"name\":\"Scrum Planning\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Discuss the project plan and assign tasks to members\"},{\"name\":\"Design Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the design and make necessary changes\"},{\"name\":\"Development Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the development progress and make necessary changes\"},{\"name\":\"Project Review\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Review the project and make sure it meets the requirements\"}]}";
-            String json = "asda\"!rk90\n\r3%sodsdasd {\"boards\":[{\"name\":\"Main board\",\"description\":\"main board description\"}],\"tasks\":[{\"name\":\"test 1\",\"description\":\"test 2\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}],\"boardLists\":[{\"name\":\"to-do\",\"boardId\":0}],\"project\":{\"name\":\"Website Development\",\"description\":\"Building a website for a business with a deadline at the end of the month\"},\"roles\":[{\"name\":\"Project Manager\",\"description\":\"Responsible for managing the project\"},{\"name\":\"Designer\",\"description\":\"Responsible for designing the website\"},{\"name\":\"Developer\",\"description\":\"Responsible for developing the website\"}],\"members\":[{\"roleId\":0,\"isAI\":false},{\"roleId\":1,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false}],\"events\":[{\"name\":\"Scrum Planning\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Discuss the project plan and assign tasks to members\"},{\"name\":\"Design Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the design and make necessary changes\"},{\"name\":\"Development Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the development progress and make necessary changes\"},{\"name\":\"Project Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the project and make sure it meets the requirements\"}]}asdasdasd'\"d893";
-            //String json = response.getChoices().get(0).getText();
+            // String json = "{\"boards\":[{\"name\":\"Main board\",\"description\":\"main board description\"}],\"tasks\":[{\"name\":\"test 1\",\"description\":\"test 2\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}],\"boardLists\":[{\"name\":\"to-do\",\"boardId\":0}],\"project\":{\"name\":\"Website Development\",\"description\":\"Building a website for a business with a deadline at the end of the month\"},\"roles\":[{\"name\":\"Project Manager\",\"description\":\"Responsible for managing the project\"},{\"name\":\"Designer\",\"description\":\"Responsible for designing the website\"},{\"name\":\"Developer\",\"description\":\"Responsible for developing the website\"}],\"members\":[{\"roleId\":0,\"isAI\":false},{\"roleId\":1,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false}],\"events\":[{\"name\":\"Scrum Planning\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Discuss the project plan and assign tasks to members\"},{\"name\":\"Design Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the design and make necessary changes\"},{\"name\":\"Development Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the development progress and make necessary changes\"},{\"name\":\"Project Review\",\"startDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":10,\"minute\":0},\"endDateTime\":{\"year\":2020,\"month\":7,\"day\":20,\"hour\":12,\"minute\":0},\"location\":\"Online\",\"agenda\":\"Review the project and make sure it meets the requirements\"}]}";
+            // String json = "asda\"!rk90\n\r3%sodsdasd {\"boards\":[{\"name\":\"Main board\",\"description\":\"main board description\"}],\"tasks\":[{\"name\":\"test 1\",\"description\":\"test 2\",\"boardListId\":0,\"dueDate\":\"2023-04-04T00:00:00\"}],\"boardLists\":[{\"name\":\"to-do\",\"boardId\":0}],\"project\":{\"name\":\"Website Development\",\"description\":\"Building a website for a business with a deadline at the end of the month\"},\"roles\":[{\"name\":\"Project Manager\",\"description\":\"Responsible for managing the project\"},{\"name\":\"Designer\",\"description\":\"Responsible for designing the website\"},{\"name\":\"Developer\",\"description\":\"Responsible for developing the website\"}],\"members\":[{\"roleId\":0,\"isAI\":false},{\"roleId\":1,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false},{\"roleId\":2,\"isAI\":false}],\"events\":[{\"name\":\"Scrum Planning\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Discuss the project plan and assign tasks to members\"},{\"name\":\"Design Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the design and make necessary changes\"},{\"name\":\"Development Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the development progress and make necessary changes\"},{\"name\":\"Project Review\",\"startDateTime\":\"2021-04-30T00:00:00\",\"endDateTime\":\"2021-04-30T00:00:00\",\"location\":\"Online\",\"agenda\":\"Review the project and make sure it meets the requirements\"}]}asdasdasd'\"d893";
+            
+            CompletionResponse response = getCompletionResponse(prompt, 712);
+            String json = response.getChoices().get(0).getText();
             // Parse JSON from response using the object mapper
             gptResponse = objectMapper.readValue(GeneratorGPTSanitizer.sanitize(json), GPTResponse.class);
 
@@ -141,8 +135,6 @@ public class GeneratorGPTService {
 
         return gptResponse;
     }
-
-    
 
     /**
      * Returns a completion response.

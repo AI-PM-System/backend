@@ -54,7 +54,7 @@ public class RoleResponse {
         this.name = role.getName();
         this.description = role.getDescription();
         if (includeMembers) {
-            this.members = role.getMembers().stream().map(m->new MemberResponse(m, false, false)).collect(Collectors.toList());
+            this.members = role.getMembers() != null ? role.getMembers().stream().map(m->new MemberResponse(m, false, false)).collect(Collectors.toList()) : null;
         }
         if (includeProject) {
             this.project = new ProjectResponse(role.getProject());

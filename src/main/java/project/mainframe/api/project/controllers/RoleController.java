@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import project.mainframe.api.project.annotations.Authorization;
 import project.mainframe.api.project.dto.role.RoleRequest;
 import project.mainframe.api.project.dto.role.RoleResponse;
-import project.mainframe.api.project.entities.Role;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.services.RoleService;
 

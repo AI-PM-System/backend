@@ -3,23 +3,17 @@ package project.mainframe.api.project.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import project.mainframe.api.chat.entities.Chat;
-import project.mainframe.api.chat.enums.ChatType;
-import project.mainframe.api.chat.repositories.ChatRepository;
 import project.mainframe.api.project.dto.project.ProjectRequest;
 import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.Member;
 import project.mainframe.api.project.entities.Project;
 import project.mainframe.api.project.entities.User;
-import project.mainframe.api.project.repositories.EventRepository;
 import project.mainframe.api.project.repositories.MemberRepository;
 import project.mainframe.api.project.repositories.ProjectRepository;
-import project.mainframe.api.project.repositories.RoleRepository;
 
 /**
  * Project service.
@@ -33,24 +27,9 @@ public class ProjectService {
     private ProjectRepository projectRepository;
     
     /**
-     * The event repository.
-     */
-    private EventRepository eventRepository;
-
-    /**
-     * The role repository.
-     */
-    private RoleRepository roleRepository;
-
-    /**
      * The member repository.
      */
     private MemberRepository memberRepository;
-
-    /**
-     * The chat repository.
-     */
-    private ChatRepository chatRepository;
 
     /**
      * The user project restriction service.
@@ -61,25 +40,16 @@ public class ProjectService {
      * Constructor.
      * 
      * @param projectRepository The project repository.
-     * @param eventRepository The event repository.
-     * @param roleRepository The role repository.
      * @param memberRepository The member repository.
-     * @param chatRepository The chat repository.
      * @param userProjectRestrictionService The user project restriction service.
      */
     public ProjectService(
         ProjectRepository projectRepository,
-        EventRepository eventRepository,
-        RoleRepository roleRepository,
         MemberRepository memberRepository,
-        ChatRepository chatRepository,
         UserProjectRestrictionService userProjectRestrictionService
     ) {
         this.projectRepository = projectRepository;
-        this.eventRepository = eventRepository;
-        this.roleRepository = roleRepository;
         this.memberRepository = memberRepository;
-        this.chatRepository = chatRepository;
         this.userProjectRestrictionService = userProjectRestrictionService;
     }
 

@@ -9,13 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import project.mainframe.api.chat.entities.Chat;
-import project.mainframe.api.chat.entities.Message;
-import project.mainframe.api.chat.repositories.MessageRepository;
-import project.mainframe.api.openAI.dto.completions.CompletionRequest;
 import project.mainframe.api.openAI.dto.completions.CompletionResponse;
-import project.mainframe.api.openAI.exceptions.OpenAIException;
-import project.mainframe.api.openAI.services.OpenAIService;
-import project.mainframe.api.project.dto.project.ProjectResponse;
 import project.mainframe.api.project.entities.User;
 import project.mainframe.api.project.generator.dto.generator.*;
 import project.mainframe.api.project.generator.dto.gpt.GPTResponse;
@@ -28,7 +22,6 @@ import project.mainframe.api.project.generator.repositories.GeneratorActorReposi
 import project.mainframe.api.project.generator.repositories.GeneratorMessageRepository;
 import project.mainframe.api.project.generator.repositories.GeneratorRepository;
 import project.mainframe.api.project.generator.repositories.GeneratorToneRepository;
-import project.mainframe.api.project.generator.utils.GeneratorGPTSanitizer;
 
 /**
  * Generator service.

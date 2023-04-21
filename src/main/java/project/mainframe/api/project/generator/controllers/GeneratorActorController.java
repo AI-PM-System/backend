@@ -13,7 +13,7 @@ import project.mainframe.api.project.generator.services.GeneratorActorService;
  * The Generator actor controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/generate/actors")
+@RequestMapping("/v1/user/generate/actors")
 public class GeneratorActorController {
     
     /**

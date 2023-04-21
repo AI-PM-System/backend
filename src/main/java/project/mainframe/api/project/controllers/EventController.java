@@ -21,7 +21,7 @@ import project.mainframe.api.project.services.EventService;
  * Event controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/events")
+@RequestMapping("/v1/user/events")
 public class EventController {
 
     /**

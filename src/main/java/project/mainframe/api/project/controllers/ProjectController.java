@@ -19,7 +19,7 @@ import project.mainframe.api.project.services.ProjectService;
  * Project controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/projects")
+@RequestMapping("/v1/user/projects")
 public class ProjectController {
 
     /**

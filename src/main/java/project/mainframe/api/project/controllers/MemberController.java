@@ -21,7 +21,7 @@ import project.mainframe.api.project.services.MemberService;
  * Member controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/members")
+@RequestMapping("/v1/user/members")
 public class MemberController {
 
     /**

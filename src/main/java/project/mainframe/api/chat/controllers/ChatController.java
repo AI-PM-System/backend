@@ -20,7 +20,7 @@ import project.mainframe.api.project.entities.User;
  * Chat controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/chats")
+@RequestMapping("/v1/user/chats")
 public class ChatController {
 
     /**

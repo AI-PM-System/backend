@@ -21,7 +21,7 @@ import project.mainframe.api.project.services.RoleService;
  * Role controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/roles")
+@RequestMapping("/v1/user/roles")
 public class RoleController {
 
     /**

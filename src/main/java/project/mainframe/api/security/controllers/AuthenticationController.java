@@ -15,7 +15,7 @@ import project.mainframe.api.security.services.AuthenticationService;
  * This controller handles authentication requests.
  */
 @RestController
-@RequestMapping("/api/v1/public/authenticate")
+@RequestMapping("/v1/public/authenticate")
 public class AuthenticationController {
     
     /**

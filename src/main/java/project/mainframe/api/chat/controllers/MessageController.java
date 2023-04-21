@@ -21,7 +21,7 @@ import project.mainframe.api.project.entities.User;
  * Message controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/messages")
+@RequestMapping("/v1/user/messages")
 public class MessageController {
 
     /**

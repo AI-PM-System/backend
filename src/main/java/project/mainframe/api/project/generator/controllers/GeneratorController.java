@@ -18,7 +18,7 @@ import project.mainframe.api.project.generator.services.GeneratorService;
  * Contains the endpoints to generate a new project.
  */
 @RestController
-@RequestMapping("/api/v1/user/generate/project")
+@RequestMapping("/v1/user/generate/project")
 public class GeneratorController {
     
     /**

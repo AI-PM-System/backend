@@ -13,7 +13,7 @@ import project.mainframe.api.project.generator.services.GeneratorToneService;
  * The Generator tone controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/generate/tones")
+@RequestMapping("/v1/user/generate/tones")
 public class GeneratorToneController {
     
     /**

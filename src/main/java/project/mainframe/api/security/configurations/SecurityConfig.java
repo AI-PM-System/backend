@@ -87,28 +87,28 @@ public class SecurityConfig {
             .requestMatchers("/error").permitAll()
             .requestMatchers("/actuator/**").permitAll()
 
-            .requestMatchers(HttpMethod.GET, "/api/v1/public/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/public/**").permitAll()
-            .requestMatchers(HttpMethod.PUT, "/api/v1/public/**").permitAll()
-            .requestMatchers(HttpMethod.PATCH, "/api/v1/public/**").permitAll()
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.PATCH, "/v1/public/**").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/v1/public/**").permitAll()
 
-            .requestMatchers(HttpMethod.GET, "/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers(HttpMethod.PATCH, "/api/v1/user/**").hasAnyRole("USER", "ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.GET, "/v1/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.POST, "/v1/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/v1/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/v1/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/v1/user/**").hasAnyRole("USER", "ADMIN")
 
-            .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PUT, "/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.PATCH, "/api/v1/admin/**").hasRole("ADMIN")
-            .requestMatchers(HttpMethod.DELETE, "/api/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/v1/admin/**").hasRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/v1/admin/**").hasRole("ADMIN")
             
         .anyRequest().authenticated())
         .addFilterBefore(
             new JwtAuthenticationFilter(
-                new AntPathRequestMatcher("/api/v1/user/**"), 
+                new AntPathRequestMatcher("/v1/user/**"), 
                 jwtUtils, 
                 authenticationManager(), 
                 jwtRevocationService, 
@@ -117,7 +117,7 @@ public class SecurityConfig {
             UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(
             new JwtAuthenticationFilter(
-                new AntPathRequestMatcher("/api/v1/admin/**"), 
+                new AntPathRequestMatcher("/v1/admin/**"), 
                 jwtUtils, 
                 authenticationManager(), 
                 jwtRevocationService, 

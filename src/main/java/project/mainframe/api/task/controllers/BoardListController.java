@@ -21,7 +21,7 @@ import project.mainframe.api.task.services.BoardListService;
  * Board list controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/board-lists")
+@RequestMapping("/v1/user/board-lists")
 public class BoardListController {
     
     /**

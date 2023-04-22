@@ -21,7 +21,7 @@ import project.mainframe.api.task.services.TaskService;
  * Task controller.
  */
 @RestController
-@RequestMapping("/api/v1/user/tasks")
+@RequestMapping("/v1/user/tasks")
 public class TaskController {
     
     /**

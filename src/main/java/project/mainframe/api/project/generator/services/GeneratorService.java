@@ -140,12 +140,13 @@ public class GeneratorService {
         if (generator.getUser().getUsername() != user.getUsername()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not the owner of the generator.");
         }
-
+        
         List<GeneratorMessage> generatorMessages = new ArrayList<>();
         generatorMessages.add(saveUserMessage(request.getContent(), user, generator));
-        generatorMessages.add(saveHelpMessage(request.getContent(), user, generator));
-
         updateGeneratorMessages(generator, generatorMessages);
+
+        String singularizedMessage = toSingularMessage(generator.getMessages());
+        generatorMessages.add(saveHelpMessage(singularizedMessage, user, generator));
 
         return new GeneratorResponse(
             generator.getId(), 

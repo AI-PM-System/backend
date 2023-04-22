@@ -68,7 +68,7 @@ public class GeneratorGPTService {
      */
     public CompletionResponse getHelpMessage(String message, String gptActor, String gptTone) {
         String prompt = String.format(HELP_PROMPT, gptActor, gptTone, message);
-        return getCompletionResponse(prompt, 50); 
+        return getCompletionResponse(prompt, 80); 
 
         // Fake response
         /*
@@ -88,7 +88,7 @@ public class GeneratorGPTService {
      */
     public CompletionResponse getWelcomeMessage(String message, String gptActor, String gptTone) {
         String prompt = String.format(WELCOME_MESSAGE_PROMPT, gptActor, gptTone, message);
-        return getCompletionResponse(prompt, 50);
+        return getCompletionResponse(prompt, 80);
 
         // Fake response
         /*
@@ -123,7 +123,7 @@ public class GeneratorGPTService {
             CompletionResponse response = getCompletionResponse(prompt, 712);
             String json = response.getChoices().get(0).getText();
             // Parse JSON from response using the object mapper
-            gptResponse = objectMapper.readValue(GeneratorGPTSanitizer.sanitize(json), GPTResponse.class);
+            gptResponse = objectMapper.readValue(json, GPTResponse.class);
 
         } catch (JsonMappingException e) {
             // TODO Auto-generated catch block

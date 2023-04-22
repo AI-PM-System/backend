@@ -67,7 +67,7 @@ public class InfoMessageService {
                 event.getEndDateTime(), event.getLocation(), event.getAgenda()));
             stringBuilder.append("<hr>");
         }
-        stringBuilder.append("<a href=\"/events\" class=\"a\">Go to events</a>");
+        stringBuilder.append("<a href=\"/#/events\" class=\"a\">Go to events</a>");
         messageRepository.save(new Message(chat, null, null, stringBuilder.toString()));
     }
 
@@ -87,7 +87,7 @@ public class InfoMessageService {
             stringBuilder.append(String.format(roleFormatString, role.getName(), role.getDescription()));
             stringBuilder.append("<hr>");
         }
-        stringBuilder.append("<a href=\"/roles\" class=\"a\">Go to roles</a>");
+        stringBuilder.append("<a href=\"/#/roles\" class=\"a\">Go to roles</a>");
         messageRepository.save(new Message(chat, null, null, stringBuilder.toString()));
     }
 
@@ -110,7 +110,7 @@ public class InfoMessageService {
             stringBuilder.append(String.format(memberFormatString, user, role));
             stringBuilder.append("<hr>");
         }
-        stringBuilder.append("<a href=\"/members\" class=\"a\">Go to members</a>");
+        stringBuilder.append("<a href=\"/#/members\" class=\"a\">Go to members</a>");
         messageRepository.save(new Message(chat, null, null, stringBuilder.toString()));
     }
 
@@ -123,7 +123,7 @@ public class InfoMessageService {
     public void addInfoFromBoards(List<Board> boards, Chat chat) {
         stringBuilder.setLength(0);
 
-        String boardFormatString = "<a href=\"/board/%d\" class=\"a\">%d. Name: %s;</a>";
+        String boardFormatString = "<a href=\"/#/board/%d\" class=\"a\">%d. Name: %s;</a>";
         stringBuilder.append("<h4>📔 Boards</h4>");
         for (int i = 0; i < boards.size(); i++) {
             Board board = boards.get(i);
@@ -141,7 +141,7 @@ public class InfoMessageService {
     public void addInfoFromBoardLists(List<BoardList> boardLists, Chat chat) {
         stringBuilder.setLength(0);
 
-        String boardListFormatString = "<a href=\"/board/%d\" class=\"a\">%d. Name: %s; Board: %s;</a>";
+        String boardListFormatString = "<a href=\"/#/board/%d\" class=\"a\">%d. Name: %s; Board: %s;</a>";
         stringBuilder.append("<h4>📜 Board Lists</h4>");
         for (int i = 0; i < boardLists.size(); i++) {
             BoardList boardList = boardLists.get(i);
@@ -161,7 +161,7 @@ public class InfoMessageService {
     public void addInfoFromTasks(List<Task> tasks, Chat chat) {
         stringBuilder.setLength(0);
 
-        String taskFormatString = "<a href=\"/board/%d\" class=\"a\">%d. Name: %s; Description: %s; Board list: %s;</a>";
+        String taskFormatString = "<a href=\"/#/board/%d\" class=\"a\">%d. Name: %s; Description: %s; Board list: %s;</a>";
         stringBuilder.append("<h4>📝 Tasks</h4>");
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);

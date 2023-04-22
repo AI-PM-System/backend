@@ -10,7 +10,8 @@ public class CorsConfig implements WebMvcConfigurer {
     private static final String[] ALLOWED_ORIGINS = {
         "http://localhost:5173",
         "https://bergandersen.com",
-        "https://ai-pm-system.github.io/"
+        "https://ai-pm-system.github.io",
+        "https://static.bergandersen.com"
     };
 
     private static final String[] ALLOWED_METHODS = {
